@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "nodemon --inspect index.js"
+  },
   "dependencies": {
     "express": "^5.2.1"
   }
