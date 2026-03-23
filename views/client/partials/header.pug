@@ -1,0 +1,67 @@
+// Top Header
+.top-header
+    .container
+        .inner-wrap
+            //- if(settingWebsiteInfo.phone)
+            .inner-item
+                i.fa-solid.fa-phone
+                | 0123.456.789
+            //- if(settingWebsiteInfo.email)
+            .inner-item
+                i.fa-solid.fa-envelope
+                | contact@28travel.com
+            //- if(settingWebsiteInfo.address)
+            .inner-item
+                i.fa-solid.fa-building
+                | Số 123, đường ABC....
+// End Top Header
+// Header
+header.header
+    .container
+        .inner-wrap
+            button.inner-menu-mobile
+                i.fa-solid.fa-bars
+            .inner-logo
+                a(href="/")
+                    img(
+                        alt="28.TRAVEL"
+                        src="/assets/images/logo.png"
+                        )
+            nav.inner-menu
+                ul
+                    li
+                        a.active(href="/") Trang chủ
+                    li  
+                        a.active(href="#") Tour trong nước
+                        i.fa-solid.fa-caret-down
+
+                        ul
+                            li
+                                a(href=`#`) Tour Miền Bắc
+                            li
+                                a(href=`#`) Tour Miền Trung 
+                            li
+                                a(href=`#`) Tour Miền Nam
+                    li  
+                        a.active(href="#") Tour nước ngoài
+                        i.fa-solid.fa-caret-down
+
+                        ul
+                            li
+                                a(href=`#`) Tour Châu Á
+                            li
+                                a(href=`#`) Tour Châu Âu 
+                            li
+                                a(href=`#`) Tour Châu Mỹ
+                    li
+                        a(href="#") Tin tức
+                    li
+                        a(href="#") Liên hệ
+                .inner-overlay
+            .inner-cart
+                a(href="#")
+                    img(
+                        alt="Cart" 
+                        src="/assets/images/icon-cart.svg"
+                        )
+                    span 1
