@@ -1,6 +1,6 @@
 // Login Form
 const loginForm = document.querySelector("#login-form");
-if(loginForm) {
+if (loginForm) {
   const validation = new JustValidate('#login-form');
 
   validation
@@ -60,22 +60,22 @@ if(loginForm) {
       })
         .then(res => res.json())
         .then(data => {
-          if(data.code == "error") {
+          if (data.code == "error") {
             alert(data.message);
           }
 
-          if(data.code == "success") {
+          if (data.code == "success") {
             window.location.href = `/${pathAdmin}/dashboard`;
           }
         })
     })
-  ;
+    ;
 }
 // End Login Form
 
 // Register Form
 const registerForm = document.querySelector("#register-form");
-if(registerForm) {
+if (registerForm) {
   const validation = new JustValidate('#register-form');
 
   validation
@@ -141,13 +141,11 @@ if(registerForm) {
       const fullName = event.target.fullName.value;
       const email = event.target.email.value;
       const password = event.target.password.value;
-
       const dataFinal = {
         fullName: fullName,
         email: email,
         password: password
-      };
-
+      }
       fetch(`/${pathAdmin}/account/register`, {
         method: "POST",
         headers: {
@@ -157,22 +155,22 @@ if(registerForm) {
       })
         .then(res => res.json())
         .then(data => {
-          if(data.code == "error") {
-            alert(data.message);
+          if (data.code == "error") {
+            alert(data.message)
           }
-
-          if(data.code == "success") {
-            window.location.href = `/${pathAdmin}/account/register-initial`;
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/account/register-initial`; // Chuyển hướng ng dùng sang URL khác.
           }
         })
+
     })
-  ;
+    ;
 }
 // End Register Form
 
 // Forgot Password Form
 const forgotPasswordForm = document.querySelector("#forgot-password-form");
-if(forgotPasswordForm) {
+if (forgotPasswordForm) {
   const validation = new JustValidate('#forgot-password-form');
 
   validation
@@ -188,7 +186,7 @@ if(forgotPasswordForm) {
     ])
     .onSuccess((event) => {
       const email = event.target.email.value;
-      
+
       const dataFinal = {
         email: email,
       };
@@ -202,22 +200,22 @@ if(forgotPasswordForm) {
       })
         .then(res => res.json())
         .then(data => {
-          if(data.code == "error") {
+          if (data.code == "error") {
             alert(data.message);
           }
 
-          if(data.code == "success") {
+          if (data.code == "success") {
             window.location.href = `/${pathAdmin}/account/otp-password?email=${email}`;
           }
         })
     })
-  ;
+    ;
 }
 // End Forgot Password Form
 
 // OTP Password Form
 const otpPasswordForm = document.querySelector("#otp-password-form");
-if(otpPasswordForm) {
+if (otpPasswordForm) {
   const validation = new JustValidate('#otp-password-form');
 
   validation
@@ -229,7 +227,7 @@ if(otpPasswordForm) {
     ])
     .onSuccess((event) => {
       const otp = event.target.otp.value;
-      
+
       const urlParams = new URLSearchParams(window.location.search);
       const email = urlParams.get("email");
 
@@ -247,22 +245,22 @@ if(otpPasswordForm) {
       })
         .then(res => res.json())
         .then(data => {
-          if(data.code == "error") {
+          if (data.code == "error") {
             alert(data.message);
           }
 
-          if(data.code == "success") {
+          if (data.code == "success") {
             window.location.href = `/${pathAdmin}/account/reset-password`;
           }
         })
     })
-  ;
+    ;
 }
 // End OTP Password Form
 
 // Reset Password Form
 const resetPasswordForm = document.querySelector("#reset-password-form");
-if(resetPasswordForm) {
+if (resetPasswordForm) {
   const validation = new JustValidate('#reset-password-form');
 
   validation
@@ -307,7 +305,7 @@ if(resetPasswordForm) {
     ])
     .onSuccess((event) => {
       const password = event.target.password.value;
-      
+
       const dataFinal = {
         password: password
       };
@@ -321,15 +319,15 @@ if(resetPasswordForm) {
       })
         .then(res => res.json())
         .then(data => {
-          if(data.code == "error") {
+          if (data.code == "error") {
             alert(data.message);
           }
 
-          if(data.code == "success") {
+          if (data.code == "success") {
             window.location.href = `/${pathAdmin}/dashboard`;
           }
         })
     })
-  ;
+    ;
 }
 // End Reset Password Form

@@ -1,8 +1,39 @@
+const AccountAdmin = require("../../models/account-admin.model")
+
 module.exports.login = (req, res) => {
     res.render('admin/pages/login', { titlePage: "Trang đăng nhập" })
 }
 module.exports.register = (req, res) => {
     res.render('admin/pages/register', { titlePage: "Trang đăng ký" })
+}
+// [POST] /admin/account/register
+module.exports.registerPost = async (req, res) => {
+    const { fullName, email, password } = req.body;
+    // Tìm kiếm xem có tài khoản có email trùng trong DB hay chưa
+    const exitsAccount = await AccountAdmin.findOne({
+        email: email,
+    })
+    // Nếu tồn tại 
+    if (exitsAccount) {
+        res.json({
+            code: "error",
+            message: "Email đã tồn tại trong hệ thống!"
+        })
+        return; // Dừng chương trình luôn.
+    }
+    // Nếu chưa tồn tại thì lưu thông tin tài khoản vào DB.
+    const newAccount = new AccountAdmin({
+        fullName: fullName,
+        email: email,
+        password: password,
+        status: "initial"
+    });
+    await newAccount.save();
+
+    res.json({
+        code: "success",
+        message: "Đăng ký tài khoản thành công!"
+    })
 }
 module.exports.forgotPassword = (req, res) => {
     res.render('admin/pages/forgot-password', { titlePage: "Trang quên mật khẩu" })
@@ -16,4 +47,7 @@ module.exports.resetPassword = async (req, res) => {
     res.render("admin/pages/reset-password", {
         pageTitle: "Nhập mã OTP"
     })
+}
+module.exports.registerInitial = (req, res) => {
+    res.render('admin/pages/register-initial', { titlePage: "Tài khoản được khởi tạo" })
 }
