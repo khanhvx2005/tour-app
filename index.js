@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-
+const cookieParser = require('cookie-parser')
+const variableConfig = require('./config/variable')
 const path = require('path')
 const database = require('./config/database');
 require('dotenv').config() // or import 'dotenv/config' if you're using ES6
@@ -17,7 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.urlencoded())
 // parse application/json
 app.use(bodyParser.json())
-app.locals.pathAdmin = "admin";
+app.use(cookieParser())
+app.locals.pathAdmin = variableConfig.pathAdmin;
+global.pathAdmin = variableConfig.pathAdmin;
 database.connect();
 adminRoute(app);
 clientRoute(app);
