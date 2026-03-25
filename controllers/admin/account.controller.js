@@ -3,6 +3,39 @@ const bcrypt = require('bcryptjs');
 module.exports.login = (req, res) => {
     res.render('admin/pages/login', { titlePage: "Trang đăng nhập" })
 }
+module.exports.loginPost = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await AccountAdmin.findOne({
+        email: email
+    });
+    if (!user) {
+        res.json({
+            code: "error",
+            message: "Email không tồn tại trong hệ thống!"
+        })
+        return;
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password); // true
+    if (!isPasswordValid) {
+        res.json({
+            code: "error",
+            message: "Sai mật khẩu!"
+        })
+        return;
+    }
+    if (user.status !== "active") {
+        res.json({
+            code: "error",
+            message: "Tài khoản chưa được kích hoạt!"
+        })
+        return;
+    }
+
+    res.json({
+        code: 'success',
+        message: "Đăng nhập thành công!"
+    })
+}
 module.exports.register = (req, res) => {
     res.render('admin/pages/register', { titlePage: "Trang đăng ký" })
 }
