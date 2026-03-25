@@ -1,5 +1,7 @@
 const AccountAdmin = require("../../models/account-admin.model")
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 module.exports.login = (req, res) => {
     res.render('admin/pages/login', { titlePage: "Trang đăng nhập" })
 }
@@ -30,7 +32,17 @@ module.exports.loginPost = async (req, res) => {
         })
         return;
     }
-
+    // Tạo JWT
+    const token = jwt.sign({
+        id: user.id,
+        email: user.email
+    }, process.env.JWT_SECRET, // mã hóa thông tin dựa trên chuỗi bảo mật đảm bảo ko bị lộ tt để ko bị giải mã đc
+        { expiresIn: '1d' });  // token có thời hạn 1 ngày
+    res.cookie("token", token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "strict"
+    })
     res.json({
         code: 'success',
         message: "Đăng nhập thành công!"
@@ -86,4 +98,11 @@ module.exports.resetPassword = async (req, res) => {
 }
 module.exports.registerInitial = (req, res) => {
     res.render('admin/pages/register-initial', { titlePage: "Tài khoản được khởi tạo" })
+}
+module.exports.logoutPost = (req, res) => {
+    res.clearCookie("token");
+    res.json({
+        code: "success",
+        message: "Đăng xuất thành công!"
+    })
 }
