@@ -10,6 +10,10 @@ const settingRoutes = require('./setting.route')
 const profileRoutes = require('./profile.route')
 const authMiddleware = require("../../middlewares/admin/auth.middleware")
 module.exports = (app) => {
+    app.use((req, res, next) => {
+        res.setHeader('Cache-control', 'no-store')
+        next()
+    })
     app.use(`/${pathAdmin}/account`, accountRoutes)
     app.use(`/${pathAdmin}/dashboard`, authMiddleware.verifyToken, dashboardRoutes)
     app.use(`/${pathAdmin}/category`, authMiddleware.verifyToken, categoryRoutes)

@@ -6,7 +6,7 @@ module.exports.login = (req, res) => {
     res.render('admin/pages/login', { titlePage: "Trang đăng nhập" })
 }
 module.exports.loginPost = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, rememberPassword } = req.body;
     const user = await AccountAdmin.findOne({
         email: email
     });
@@ -37,9 +37,9 @@ module.exports.loginPost = async (req, res) => {
         id: user.id,
         email: user.email
     }, process.env.JWT_SECRET, // mã hóa thông tin dựa trên chuỗi bảo mật đảm bảo ko bị lộ tt để ko bị giải mã đc
-        { expiresIn: '1d' });  // token có thời hạn 1 ngày
+        { expiresIn: rememberPassword ? '30d' : '1d' });  // token có thời hạn 1 ngày
     res.cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: rememberPassword ? (30 * 24 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: "strict"
     })
