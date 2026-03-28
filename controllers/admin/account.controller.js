@@ -1,12 +1,16 @@
 const AccountAdmin = require("../../models/account-admin.model")
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const generate = require('../../helpers/generate.helper');
+const ForgotPassword = require("../../models/forgot-password.model");
+const sendMailHepler = require('../../helpers/sendMail.helper')
 module.exports.login = (req, res) => {
     res.render('admin/pages/login', { titlePage: "Trang đăng nhập" })
 }
 module.exports.loginPost = async (req, res) => {
     const { email, password, rememberPassword } = req.body;
+
+
     const user = await AccountAdmin.findOne({
         email: email
     });
@@ -86,14 +90,102 @@ module.exports.registerPost = async (req, res) => {
 module.exports.forgotPassword = (req, res) => {
     res.render('admin/pages/forgot-password', { titlePage: "Trang quên mật khẩu" })
 }
+module.exports.forgotPasswordPost = async (req, res) => {
+    const { email } = req.body;
+    const exitsAccount = await AccountAdmin.findOne({
+        email: email
+    })
+    if (!exitsAccount) {
+        res.json({
+            code: "error",
+            message: "Email không tồn tại!"
+        })
+        return;
+    }
+    const exitsAccountInForgotPassword = await ForgotPassword.findOne({
+        email: email
+    })
+    if (exitsAccountInForgotPassword) {
+        res.json({
+            code: "error",
+            message: "Vui lòng gửi lại yêu cầu sau 5 phút!"
+        })
+        return;
+    }
+    const otp = generate.generateRandomNumber(6);
+    const newForgotPassword = new ForgotPassword({
+        email: email,
+        otp: otp,
+        expireAt: Date.now()
+
+    })
+    await newForgotPassword.save();
+    const subject = "Mã OTP xác nhận lại mật khẩu";
+    const html = `Mã OTP của bạn là: ${otp} . Mã OTP có hiệu lực trong 3 phút`;
+    sendMailHepler.sendMail(email, subject, html)
+    res.json({
+        code: "success",
+        message: "Gửi email thành công!",
+
+    })
+}
 module.exports.otpPassword = async (req, res) => {
     res.render("admin/pages/otp-password", {
         pageTitle: "Nhập mã OTP"
     })
 }
+module.exports.otpPasswordPost = async (req, res) => {
+    const { email, otp } = req.body;
+    const exitsOtp = await ForgotPassword.findOne({
+        email: email,
+        otp: otp
+    })
+    if (!exitsOtp) {
+        res.json({
+            code: "error",
+            message: "Mã otp không tồn tại!"
+        })
+        return;
+    }
+    const account = await AccountAdmin.findOne({
+        email: email
+    });
+    const token = jwt.sign({
+        email: account.email,
+        id: account.id
+    },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' });
+
+    res.cookie("token", token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "strict"
+    })
+    res.json({
+        code: "success",
+        message: "Gửi mã otp thành công!"
+    })
+}
 module.exports.resetPassword = async (req, res) => {
     res.render("admin/pages/reset-password", {
         pageTitle: "Nhập mã OTP"
+    })
+}
+module.exports.resetPasswordPost = async (req, res) => {
+    const { password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await AccountAdmin.updateOne({
+        _id: req.account.id,
+        status: "active",
+        deleted: false
+    }, {
+        password: hashedPassword
+    })
+    res.json({
+        code: "success",
+        message: "Đổi mật khẩu thành công"
     })
 }
 module.exports.registerInitial = (req, res) => {

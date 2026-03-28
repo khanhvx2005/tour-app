@@ -37,6 +37,7 @@ module.exports.registerPost = (req, res, next) => {
                     return helpers.error("password.special")
 
                 }
+                return value;
             })
             .message({
                 "string.empty": "Vui lòng nhập mật khẩu",
@@ -50,6 +51,58 @@ module.exports.registerPost = (req, res, next) => {
     })
     const { error } = schema.validate(req.body);
     // Trường hợp có lỗi sẽ có obj error còn không thì error sẽ trả về null thì sẽ ko chạy vào if
+    if (error) {
+        res.json({
+            code: "error",
+            message: error.details[0].message
+        })
+        return;
+    }
+    next()
+}
+module.exports.loginPost = (req, res, next) => {
+    const schema = Joi.object({
+        email: Joi.string()
+            .required()
+            .email()
+            .message({
+                "string.empty": "Vui lòng nhập email của bạn!",
+                "string.email": "Email không đúng định dạng!"
+            }),
+        password: Joi.string()
+            .required()
+            .min(8)
+            .custom((value, helpers) => {
+                if (!/[A-Z]/.test(value)) {
+                    return helpers.error('password.uppercase');
+                }
+                if (!/[a-z]/.test(value)) {
+                    return helpers.error('password.lowercase');
+                }
+                if (!/\d/.test(value)) {
+                    return helpers.error('password.number');
+
+                }
+                if (!/[@$!%*?&]/.test(value)) {
+                    return helpers.error("password.special")
+
+                }
+                return value;
+            })
+            .message({
+                "string.empty": "Vui lòng nhập mật khẩu!",
+                "string.min": "Mật khẩu phải chứa ít nhất 8 ký tự!",
+                "password.uppercase": "Mật khẩu phải chứa ít nhất một chữ cái in hoa!",
+                "password.lowercase": "Mật khẩu phải chứa ít nhất một chữ cái thường!",
+                "password.number": 'Mật khẩu phải chứa ít nhất một chữ số!',
+                "password.special": 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!'
+
+
+            }),
+
+        rememberPassword: Joi.boolean()
+    })
+    const { error } = schema.validate(req.body);
     if (error) {
         res.json({
             code: "error",
