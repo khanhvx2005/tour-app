@@ -1,6 +1,6 @@
 extends ../layouts/default.pug
 include ../mixins/options.pug
-
+include ../mixins/select-tree.pug
 block main
   h1.box-title Tạo danh mục
 
@@ -13,8 +13,7 @@ block main
         label(class="inner-label" for="parent") Danh mục cha
         select(id="parent" name="parent")
           option(value = "" disabled selected) -- Chọn danh mục --
-          option(value="69c8a2fb28816fa2f34eeb42") Tour trong nước
-          option(value="") Tour nước ngoài
+          +select-tree(categoryList)
 
           //- +options(categoryList, 0)
       .inner-group
