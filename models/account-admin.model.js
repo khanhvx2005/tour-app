@@ -5,6 +5,10 @@ const accountAdminSchema = new mongoose.Schema(
         email: String,
         password: String,
         status: String,
+        deleted: {
+            type: Boolean,
+            default: false
+        }
     }, { timestamps: true }
 );
 const AccountAdmin = mongoose.model('AccountAdmin', accountAdminSchema, "accounts-admin");

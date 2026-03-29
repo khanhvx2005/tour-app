@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const adminRoute = require('./routes/admin/index.route')
 const clientRoute = require("./routes/client/index.route")
 const variableConfig = require('./config/variable')
+
 const app = express()
 const port = 3000
 // Thiết lập pug
@@ -23,7 +24,6 @@ app.use(bodyParser.json())
 app.use(cookieParser('ABCDSADSA'));
 app.use(expressSession({ cookie: { maxAge: 60000 } }));
 app.use(flash());
-
 app.locals.pathAdmin = variableConfig.pathAdmin;
 global.pathAdmin = variableConfig.pathAdmin;
 database.connect()

@@ -1,9 +1,36 @@
 const categoryHelper = require("../../helpers/category.helper")
+const AccountAdmin = require("../../models/account-admin.model")
 const Category = require("../../models/category.model")
+const moment = require('moment');
 
 module.exports.list = async (req, res) => {
+    const categoryList = await Category.find({
+        deleted: false
+    }).sort({ position: "desc" })
+    for (const item of categoryList) {
+        if (item.createdBy) {
+            const infoAccount = await AccountAdmin.findOne({
+                _id: item.createdBy,
+
+            })
+            item.createdByFullName = infoAccount.fullName;
+
+        }
+        if (item.updatedBy) {
+            const infoAccount = await AccountAdmin.findOne({
+                _id: item.updatedBy,
+
+            })
+            item.updatedByFullName = infoAccount.fullName;
+            item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
+            item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
+
+        }
+
+    }
     res.render("admin/pages/category-list", {
-        pageTitle: "Trang danh sách danh mục"
+        pageTitle: "Trang danh sách danh mục",
+        categoryList: categoryList
     })
 }
 module.exports.create = async (req, res) => {
