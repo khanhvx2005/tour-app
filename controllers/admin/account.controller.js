@@ -151,8 +151,9 @@ module.exports.otpPasswordPost = async (req, res) => {
         email: email
     });
     const token = jwt.sign({
+        id: account.id,
         email: account.email,
-        id: account.id
+
     },
         process.env.JWT_SECRET,
         { expiresIn: '1d' });
@@ -173,13 +174,14 @@ module.exports.resetPassword = async (req, res) => {
     })
 }
 module.exports.resetPasswordPost = async (req, res) => {
+
     const { password } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     await AccountAdmin.updateOne({
         _id: req.account.id,
         status: "active",
-        deleted: false
+        // deleted: false
     }, {
         password: hashedPassword
     })
@@ -187,7 +189,9 @@ module.exports.resetPasswordPost = async (req, res) => {
         code: "success",
         message: "Đổi mật khẩu thành công"
     })
+
 }
+
 module.exports.registerInitial = (req, res) => {
     res.render('admin/pages/register-initial', { titlePage: "Tài khoản được khởi tạo" })
 }

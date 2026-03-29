@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 module.exports.sendMail = (email, subject, html) => {
-    const secure = SECURE == "true" ? true : false;
+    const secure = process.env.SECURE == "true";
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         auth: {

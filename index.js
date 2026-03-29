@@ -1,13 +1,12 @@
 const express = require('express')
+const path = require('path')
 require('dotenv').config() // or import 'dotenv/config' if you're using ES6
-
+const database = require('./config/database');
 const bodyParser = require('body-parser')
+const adminRoute = require('./routes/admin/index.route')
+const clientRoute = require("./routes/client/index.route")
 const cookieParser = require('cookie-parser')
 const variableConfig = require('./config/variable')
-const path = require('path')
-const database = require('./config/database');
-const adminRoute = require('./routes/admin/index.route')
-const clientRoute = require("./routes/client/index.route");
 const app = express()
 const port = 3000
 // Thiết lập pug
@@ -16,6 +15,7 @@ app.set('view engine', 'pug')
 app.use(express.static(path.join(__dirname, 'public')))
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded())
+app.use(express.json());
 // parse application/json
 app.use(bodyParser.json())
 app.use(cookieParser())

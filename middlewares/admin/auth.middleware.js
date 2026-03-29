@@ -21,6 +21,7 @@ module.exports.verifyToken = async (req, res, next) => {
             return;
         }
         req.account = exitsAccount;
+        res.locals.account = exitsAccount;
         next();
     } catch (error) {
         res.clearCookie("token")

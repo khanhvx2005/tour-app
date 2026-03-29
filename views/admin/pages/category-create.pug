@@ -12,9 +12,9 @@ block main
       .inner-group
         label(class="inner-label" for="parent") Danh mục cha
         select(id="parent" name="parent")
-          option(value="") -- Chọn danh mục --
-          option(value="") Danh mục 1
-          option(value="") Danh mục 2
+          option(value = "" disabled selected) -- Chọn danh mục --
+          option(value="69c8a2fb28816fa2f34eeb42") Tour trong nước
+          option(value="") Tour nước ngoài
 
           //- +options(categoryList, 0)
       .inner-group
@@ -23,8 +23,8 @@ block main
       .inner-group
         label(class="inner-label" for="status") Trạng thái
         select(id="status" name="status")
-          option(value="") Hoạt động
-          option(value="") Tạm dừng
+          option(value="active") Hoạt động
+          option(value="inactive") Tạm dừng
       .inner-group.inner-two-col
         label(class="inner-label" for="avatar") Ảnh đại diện
         div(class="inner-upload-image")
