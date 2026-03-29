@@ -1,11 +1,13 @@
 const express = require('express')
+const flash = require('express-flash')
+const cookieParser = require('cookie-parser')
+const expressSession = require('express-session')
 const path = require('path')
 require('dotenv').config() // or import 'dotenv/config' if you're using ES6
 const database = require('./config/database');
 const bodyParser = require('body-parser')
 const adminRoute = require('./routes/admin/index.route')
 const clientRoute = require("./routes/client/index.route")
-const cookieParser = require('cookie-parser')
 const variableConfig = require('./config/variable')
 const app = express()
 const port = 3000
@@ -18,7 +20,10 @@ app.use(bodyParser.urlencoded())
 app.use(express.json());
 // parse application/json
 app.use(bodyParser.json())
-app.use(cookieParser())
+app.use(cookieParser('ABCDSADSA'));
+app.use(expressSession({ cookie: { maxAge: 60000 } }));
+app.use(flash());
+
 app.locals.pathAdmin = variableConfig.pathAdmin;
 global.pathAdmin = variableConfig.pathAdmin;
 database.connect()

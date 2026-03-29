@@ -4,14 +4,14 @@ module.exports.createPost = (req, res, next) => {
     const schema = Joi.object({
         name: Joi.string()
             .required()
-            .message({
+            .messages({
                 "string.empty": "Vui lòng nhập tên danh mục!"
             }),
-        parent: Joi.string.allow(""),
-        position: Joi.string.allow(""),
-        status: Joi.string.allow(""),
-        avatar: Joi.string.allow(""),
-        description: Joi.string.allow(""),
+        parent: Joi.string().allow(""),
+        position: Joi.string().allow(""),
+        status: Joi.string().allow(""),
+        avatar: Joi.string().allow(""),
+        description: Joi.string().allow(""),
 
     })
     const { error } = schema.validate(req.body);

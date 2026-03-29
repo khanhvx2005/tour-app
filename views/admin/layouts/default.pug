@@ -15,7 +15,9 @@ html
     
   body
 
-      
+    - if (messages.success)
+      div
+        span= messages.success
     
     //- Header
     include ../partials/header.pug

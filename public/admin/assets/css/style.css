@@ -28,6 +28,7 @@ a {
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
 /* End page-account */
 
 /* form-account */
@@ -245,6 +246,7 @@ a {
     width: 95%;
   }
 }
+
 /* End form-account */
 
 /* Header */
@@ -375,6 +377,7 @@ a {
     margin-right: 15px;
   }
 }
+
 /* End Header */
 
 /* Sider */
@@ -390,11 +393,11 @@ a {
 }
 
 .sider::-webkit-scrollbar {
-	width: 3px;
+  width: 3px;
 }
 
 .sider::-webkit-scrollbar-thumb {
-	background-color: #ddd;
+  background-color: #ddd;
 }
 
 .sider .inner-menu {
@@ -479,6 +482,7 @@ a {
     z-index: 9999;
   }
 }
+
 /* End Sider */
 
 /* Main */
@@ -504,6 +508,7 @@ a {
     padding: 30px 15px;
   }
 }
+
 /* End Main */
 
 /* Box Title */
@@ -514,6 +519,7 @@ a {
   font-size: 32px;
   color: var(--color-text);
 }
+
 /* End Box Title */
 
 /* Section 1 */
@@ -566,6 +572,7 @@ a {
     grid-template-columns: repeat(1, 1fr);
   }
 }
+
 /* End Section 1 */
 
 /* Section 2 */
@@ -611,6 +618,7 @@ a {
   width: 100% !important;
   height: 100% !important;
 }
+
 /* End Section 2 */
 
 /* Section 3 */
@@ -629,6 +637,7 @@ a {
   font-size: 24px;
   color: var(--color-text);
 }
+
 /* End Section 3 */
 
 /* table-1 */
@@ -721,6 +730,7 @@ a {
   color: var(--color-text);
   margin-top: 3px;
 }
+
 /* End table-1 */
 
 /* Badge */
@@ -746,6 +756,7 @@ a {
   background-color: rgba(239, 55, 38, 0.2);
   color: #EF3826;
 }
+
 /* End Badge */
 
 /* Section 4 */
@@ -805,6 +816,7 @@ a {
     padding: 10px 14px;
   }
 }
+
 /* End Section 4 */
 
 /* Section 5 */
@@ -887,7 +899,8 @@ a {
   color: #979797;
 }
 
-.section-5 .inner-button-create button, .section-5 .inner-button-create a {
+.section-5 .inner-button-create button,
+.section-5 .inner-button-create a {
   background-color: var(--color-primary);
   color: #fff;
   font-weight: 700;
@@ -902,7 +915,8 @@ a {
   align-items: center;
 }
 
-.section-5 .inner-button-trash button, .section-5 .inner-button-trash a {
+.section-5 .inner-button-trash button,
+.section-5 .inner-button-trash a {
   background-color: #EF382633;
   color: #EF3826;
   font-weight: 700;
@@ -928,12 +942,14 @@ a {
     width: 100%;
   }
 }
+
 /* End Section 5 */
 
 /* Section 6 */
 .section-6 {
   margin-bottom: 15px;
 }
+
 /* End Section 6 */
 
 /* .table-2 */
@@ -1071,6 +1087,7 @@ a {
   color: var(--color-text);
   margin-top: 3px;
 }
+
 /* End .table-2 */
 
 /* Section 7 */
@@ -1096,6 +1113,7 @@ a {
   font-size: 14px;
   color: var(--color-text);
 }
+
 /* End Section 7 */
 
 /* Section 8 */
@@ -1482,6 +1500,7 @@ a {
     order: 1;
   }
 }
+
 /* End Section 8 */
 
 /* Section 9 */
@@ -1536,6 +1555,7 @@ a {
     gap: 20px;
   }
 }
+
 /* End Section 9 */
 
 /* Section 10 */
@@ -1596,21 +1616,117 @@ a {
     font-size: 16px;
   }
 }
+
 /* End Section 10 */
 
 /* Alert */
-.alert {
+[show-alert] {
   position: fixed;
-  top: 80px;
-  right: 20px;
-  z-index: 999;
-  background-color: #ddd;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 500;
+  top: 25px;
+  right: 25px;
+  z-index: 9999;
+  min-width: 350px;
+  max-width: 450px;
+
+  background: #fff;
+  border: none;
+  border-left: 5px solid;
+  /* Thanh màu bên trái */
+  border-radius: 4px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  /* Đổ bóng sâu */
+
+  display: flex;
+  align-items: center;
+  /* Căn giữa dọc */
+  padding: 15px 20px;
+
+  /* Animation */
+  animation: slideInLeft 0.5s ease forwards;
+  transition: all 0.3s ease;
 }
 
-.alert-success {
-  background-color: #a3e0a3;
+/* Animation trượt từ phải sang */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
+
+/* Class ẩn thông báo (JS sẽ thêm vào khi hết giờ) */
+[show-alert].alert-hidden {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* --- MÀU SẮC THEO TRẠNG THÁI --- */
+
+/* Thành công (Màu xanh ngọc hiện đại) */
+.alert-success {
+  border-left-color: #28c76f;
+}
+
+.alert-success .alert-icon {
+  color: #28c76f;
+}
+
+/* Lỗi (Màu đỏ dịu) */
+.alert-danger {
+  border-left-color: #ea5455;
+}
+
+.alert-danger .alert-icon {
+  color: #ea5455;
+}
+
+/* --- CẤU TRÚC NỘI DUNG --- */
+
+.alert-icon {
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.alert-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.alert-desc {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Nút đóng (Close button) */
+.alert-close {
+  cursor: pointer;
+  padding: 5px;
+  color: #999;
+  transition: color 0.2s;
+  margin-left: 10px;
+}
+
+.alert-close:hover {
+  color: #333;
+}
+
 /* End Alert */

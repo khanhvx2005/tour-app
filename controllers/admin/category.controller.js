@@ -38,8 +38,9 @@ module.exports.createPost = async (req, res) => {
         updatedBy: req.account.id
     })
     await newCategory.save();
+    req.flash("success", "Tạo danh mục thành công!")
     res.json({
         code: "success",
-        message: "Tạo danh mục thành công!"
+
     })
 }
