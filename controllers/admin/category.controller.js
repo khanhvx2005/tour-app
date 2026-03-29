@@ -17,9 +17,7 @@ module.exports.createPost = async (req, res) => {
     } else {
         req.body.position = parseInt(req.body.position);
     }
-    if (req.file) {
-        req.body.avatar = `/uploads/${req.file.filename}`;
-    }
+    req.body.avatar = req.file ? req.file.path : "";
     const newCategory = new Category({
         name: req.body.name,
         parent: req.body.parent,

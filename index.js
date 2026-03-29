@@ -21,9 +21,10 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.locals.pathAdmin = variableConfig.pathAdmin;
 global.pathAdmin = variableConfig.pathAdmin;
-database.connect();
-adminRoute(app);
+database.connect()
 clientRoute(app);
+
+adminRoute(app);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
