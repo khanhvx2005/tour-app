@@ -1,7 +1,9 @@
 extends ../layouts/default.pug
 include ../mixins/options.pug
-
+include ../mixins/select-tree.pug
+include ../mixins/alert.pug
 block main
+  +alert_success("5000")
   h1.box-title Chỉnh sửa danh mục
 
   .section-8
@@ -16,7 +18,7 @@ block main
         label(class="inner-label" for="parent") Danh mục cha
         select(id="parent" name="parent")
           option(value="") -- Chọn danh mục --
-          +options(categoryList, 0, categoryDetail.parent)
+          +select-tree(categoryList , 0 , categoryDetail.parent)
       .inner-group
         label(class="inner-label" for="position") Vị trí
         input(type="number" id="position" name="position" value=categoryDetail.position)
@@ -25,11 +27,11 @@ block main
         select(id="status" name="status")
           option(
             value="active"
-            selected=(categoryDetail.status == "active" ? true : false)
+            selected = (categoryDetail.status == "active" ? true : false)
           ) Hoạt động
           option(
             value="inactive"
-            selected=(categoryDetail.status == "inactive" ? true : false)
+            selected = (categoryDetail.status == "inactive" ? true : false)
           ) Tạm dừng
       .inner-group.inner-two-col
         label(class="inner-label" for="avatar") Ảnh đại diện
@@ -37,7 +39,7 @@ block main
           input(type="file" id="avatar" accept="image/*" filepond-image name="avatar")
       .inner-group.inner-two-col
         label(class="inner-label" for="description") Mô tả
-        textarea(id="description" textarea-mce name="description") #{categoryDetail.description}
+        textarea(id="description" textarea-mce name="description") !{categoryDetail.description}
       .inner-button.inner-two-col
         button Cập nhật
     .inner-back

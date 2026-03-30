@@ -22,10 +22,9 @@ module.exports.list = async (req, res) => {
 
             })
             item.updatedByFullName = infoAccount.fullName;
-            item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
-            item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
-
         }
+        item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
+        item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
 
     }
     res.render("admin/pages/category-list", {
@@ -70,4 +69,62 @@ module.exports.createPost = async (req, res) => {
         code: "success",
 
     })
+}
+module.exports.edit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const categoryDetail = await Category.findOne({
+            _id: id,
+            deleted: false
+        })
+        // Lấy danh sách các danh mục hiển thị trường danh mục cha bên giao diện
+        const categoryList = await Category.find({
+            deleted: false
+        })
+        const newCategoryList = categoryHelper.buildCategoryTree(categoryList);
+        res.render('admin/pages/category-edit', { pageTitle: "Trang chỉnh sửa danh mục", categoryDetail: categoryDetail, categoryList: newCategoryList })
+    }
+    catch (error) {
+        res.redirect(`/${pathAdmin}/category/list`)
+    }
+
+}
+
+module.exports.editPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!req.body.position) {
+            const count = await Category.countDocuments();
+            req.body.position = count + 1;
+        } else {
+            req.body.position = parseInt(req.body.position);
+        }
+        const objCategory = {
+            name: req.body.name,
+            parent: req.body.parent,
+            position: req.body.position,
+            status: req.body.status,
+            description: req.body.description,
+            updatedBy: req.account.id
+        }
+
+        if (req.file) {
+            objCategory.avatar = req.file.path;
+        }
+        await Category.updateOne({
+            _id: id,
+            deleted: false
+        }, objCategory)
+        req.flash("success", "Cập nhập danh mục thành công!")
+        res.json({
+            code: "success",
+            message: "Cập nhập danh mục thành công!"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id không hợp lệ"
+        })
+    }
+
 }
