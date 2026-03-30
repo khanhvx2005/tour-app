@@ -4,9 +4,13 @@ const Category = require("../../models/category.model")
 const moment = require('moment');
 
 module.exports.list = async (req, res) => {
-    const categoryList = await Category.find({
+    const find = {
         deleted: false
-    }).sort({ position: "desc" })
+    }
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+    const categoryList = await Category.find(find).sort({ position: "desc" })
     for (const item of categoryList) {
         if (item.createdBy) {
             const infoAccount = await AccountAdmin.findOne({
@@ -128,7 +132,7 @@ module.exports.editPatch = async (req, res) => {
     }
 
 }
-module.exports.delete = async (req, res) => {
+module.exports.deletePatch = async (req, res) => {
     try {
         const id = req.params.id;
         await Category.updateOne({
