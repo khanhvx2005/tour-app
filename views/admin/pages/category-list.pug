@@ -98,7 +98,8 @@ block main
                   ) <i class="fa-regular fa-pen-to-square"></i>
                   button(
                     class="inner-delete"
-                    data-api=`#`
+                    data-api=`/${pathAdmin}/category/delete/${item.id}`
+                    button-delete
                   ) <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
@@ -110,3 +111,5 @@ block main
         option(value="") Trang 2
         option(value="") Trang 3
   //- End Section 7
+  
+  

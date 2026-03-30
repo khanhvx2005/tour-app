@@ -1299,23 +1299,20 @@ if (showAlert) {
 // End Alert
 
 // Button Delete
-const listButtonDelete = document.querySelectorAll("[button-delete]");
-if (listButtonDelete.length > 0) {
-  listButtonDelete.forEach(button => {
+const buttonDelete = document.querySelectorAll("[button-delete]");
+if (buttonDelete.length > 0) {
+  buttonDelete.forEach((button) => {
     button.addEventListener("click", () => {
-      const dataApi = button.getAttribute("data-api");
-
+      const dataApi = button.getAttribute('data-api');
       fetch(dataApi, {
         method: "PATCH"
       })
         .then(res => res.json())
         .then(data => {
-          if (data.code == "error") {
-            alert(data.message);
-          }
-
           if (data.code == "success") {
             window.location.reload();
+          } else {
+            alert(data.message)
           }
         })
     })
