@@ -6,7 +6,6 @@ const moment = require('moment');
 module.exports.list = async (req, res) => {
     const find = {
         deleted: false,
-
     }
     if (req.query.status) {
         find.status = req.query.status;
@@ -23,6 +22,7 @@ module.exports.list = async (req, res) => {
         const endDate = moment(req.query.endDate).endOf('Date').toDate();
         dataFilter["$lte"] = endDate;
     }
+    // Object.keys : chuyển đổi 1 đối tượng thành 1 mảng gồm các key
     if (Object.keys(dataFilter).length > 0) {
         find.createdAt = dataFilter;
     }
