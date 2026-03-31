@@ -194,3 +194,50 @@ module.exports.changeStatus = async (req, res) => {
     }
 
 }
+module.exports.changeMultiPatch = async (req, res) => {
+    try {
+        const { status, ids } = req.body;
+        switch (status) {
+            case "active":
+                await Category.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    status: status
+                })
+                req.flash("success", "Đổi trạng thái thành công!")
+
+                break;
+            case "inactive":
+                await Category.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    status: status
+                })
+                req.flash("success", "Đổi trạng thái thành công!")
+
+                break;
+            case "delete":
+                await Category.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    deleted: true,
+                    deletedBy: req.account.id,
+                    deletedAt: Date.now()
+                })
+                req.flash("success", "Xóa thành công!")
+                break;
+
+            default:
+                break;
+        }
+        res.json({
+            code: "success",
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id ko hợp lệ!"
+        })
+    }
+
+}

@@ -1418,6 +1418,8 @@ if (filterReset) {
   })
 }
 // End Filter Reset
+
+// Change Status
 const changeStatus = document.querySelectorAll("[change-status]");
 if (changeStatus.length > 0) {
   changeStatus.forEach((button) => {
@@ -1437,6 +1439,81 @@ if (changeStatus.length > 0) {
     })
   })
 }
+// Change Status
+// Change-Multi
+const checkAll = document.querySelector("[check-all]");
+if (checkAll) {
+  const checkItem = document.querySelectorAll("[check-item]");
+
+  checkAll.addEventListener("click", () => {
+    if (checkAll.checked) {
+      checkItem.forEach((input) => {
+        input.checked = true;
+      })
+    } else {
+      checkItem.forEach((input) => {
+        input.checked = false;
+      })
+    }
+  })
+  checkItem.forEach((input) => {
+    input.addEventListener("click", () => {
+      const inputItemChecked = document.querySelectorAll("[check-item]:checked");
+      if (inputItemChecked.length === checkItem.length) {
+        checkAll.checked = true;
+      } else {
+        checkAll.checked = false;
+
+      }
+    })
+  })
+
+}
+const changeMulti = document.querySelector("[change-multi]");
+if (changeMulti) {
+  const dataApi = changeMulti.getAttribute("data-api");
+  const select = changeMulti.querySelector("select");
+  const button = changeMulti.querySelector("button");
+  button.addEventListener("click", () => {
+    const status = select.value;
+    const inputItemChecked = document.querySelectorAll("[check-item]:checked");
+    let ids = [];
+    if (status && inputItemChecked.length > 0) {
+      inputItemChecked.forEach((item) => {
+        const id = item.getAttribute("check-item");
+        ids.push(id);
+      })
+    } else {
+      alert("Vui lòng chọn ít nhất 1 bản ghi và chọn hành động");
+    }
+    const dataFinal = {
+      ids: ids,
+      status: status
+    }
+    fetch(dataApi, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dataFinal)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.code == "error") {
+          alert(data.message)
+        }
+        if (data.code == "success") {
+          window.location.reload();
+        }
+      })
+  })
+}
+// End Change-Multi
+// {
+//   ids: ["145648dasdadwqeqw" , "fdsfds56443534asda"],
+//   status: "active"
+// }
+
 
 
 
