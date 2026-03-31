@@ -5,7 +5,8 @@ const moment = require('moment');
 
 module.exports.list = async (req, res) => {
     const find = {
-        deleted: false
+        deleted: false,
+
     }
     if (req.query.status) {
         find.status = req.query.status;
@@ -13,7 +14,19 @@ module.exports.list = async (req, res) => {
     if (req.query.createdBy) {
         find.createdBy = req.query.createdBy;
     }
-    const accountAdminList = await AccountAdmin.find()
+    const dataFilter = {};
+    if (req.query.startDate) {
+        const startDate = moment(req.query.startDate).startOf('Date').toDate();
+        dataFilter["$gte"] = startDate;
+    }
+    if (req.query.endDate) {
+        const endDate = moment(req.query.endDate).endOf('Date').toDate();
+        dataFilter["$lte"] = endDate;
+    }
+    if (Object.keys(dataFilter).length > 0) {
+        find.createdAt = dataFilter;
+    }
+    const accountAdminList = await AccountAdmin.find({}, 'fullName')
     const categoryList = await Category.find(find).sort({ position: "desc" })
     for (const item of categoryList) {
         if (item.createdBy) {
