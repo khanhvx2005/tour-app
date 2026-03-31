@@ -10,6 +10,10 @@ module.exports.list = async (req, res) => {
     if (req.query.status) {
         find.status = req.query.status;
     }
+    if (req.query.createdBy) {
+        find.createdBy = req.query.createdBy;
+    }
+    const accountAdminList = await AccountAdmin.find()
     const categoryList = await Category.find(find).sort({ position: "desc" })
     for (const item of categoryList) {
         if (item.createdBy) {
@@ -33,7 +37,8 @@ module.exports.list = async (req, res) => {
     }
     res.render("admin/pages/category-list", {
         pageTitle: "Trang danh sách danh mục",
-        categoryList: categoryList
+        categoryList: categoryList,
+        accountAdminList: accountAdminList
     })
 }
 module.exports.create = async (req, res) => {
