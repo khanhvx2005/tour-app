@@ -10,6 +10,7 @@ router.post('/create', upload.single('avatar'), categoryValidate.createPost, cat
 router.get('/edit/:id', categoryController.edit)
 router.patch('/edit/:id', upload.single('avatar'), categoryValidate.editPatch, categoryController.editPatch)
 router.patch('/delete/:id', categoryController.deletePatch)
+router.patch('/change-status/:id/:status', categoryController.changeStatus)
 // router.post('/revenue-chart', dashboardController.revenueChartPost)
 
 module.exports = router;

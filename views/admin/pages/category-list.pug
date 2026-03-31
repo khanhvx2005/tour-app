@@ -78,9 +78,9 @@ block main
               
               td(class="inner-center")
                 if(item.status === "active")
-                  .badge.badge-green Hoạt động
+                  .badge.badge-green(change-status style="cursor:pointer;" dataApi = `/${pathAdmin}/category/change-status/${item.id}/inactive`) Hoạt động
                 else 
-                  .badge.badge-red Tạm dừng
+                  .badge.badge-red(change-status style="cursor:pointer;" dataApi = `/${pathAdmin}/category/change-status/${item.id}/active`) Tạm dừng
               td
                 div #{item.createdByFullName}
                 div.inner-time #{item.createdAtFormat}
@@ -106,9 +106,9 @@ block main
   .section-7
     span(class="inner-label") Hiển thị 1-9 của 78
     select(class="inner-pagination" )
-        option(value="") Trang 1
-        option(value="") Trang 2
-        option(value="") Trang 3
+      option(value="") Trang 1
+      option(value="") Trang 2
+      option(value="") Trang 3
   //- End Section 7
   
   

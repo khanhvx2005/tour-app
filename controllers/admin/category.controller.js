@@ -174,3 +174,23 @@ module.exports.deletePatch = async (req, res) => {
         })
     }
 }
+module.exports.changeStatus = async (req, res) => {
+    try {
+        const { id, status } = req.params;
+        await Category.updateOne({
+            _id: id
+        }, {
+            status: status
+        })
+        req.flash("success", "Đổi trạng thái thành công!")
+        res.json({
+            code: "success"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id không hợp lệ!"
+        })
+    }
+
+}
