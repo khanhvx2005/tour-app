@@ -9,12 +9,17 @@ module.exports.list = async (req, res) => {
     const find = {
         deleted: false
     }
+    // Lọc theo trạng thái
     if (req.query.status) {
         find.status = req.query.status;
     }
+    // End Lọc theo trạng thái
+    // Lọc theo ngày tạo
     if (req.query.createdBy) {
         find.createdBy = req.query.createdBy;
     }
+    // End lọc theo người tạo
+    // Lọc theo ngày tạo
     const dataFilter = {};
     if (req.query.startDate) {
         const startDate = moment(req.query.startDate).startOf('Date').toDate();
@@ -28,6 +33,8 @@ module.exports.list = async (req, res) => {
     if (Object.keys(dataFilter).length > 0) {
         find.createdAt = dataFilter;
     }
+    // End lọc theo ngày tạo
+    // Tìm kiếm
     if (req.query.keyword) {
         const slug = slugify(req.query.keyword, {
             lower: true,
@@ -37,8 +44,34 @@ module.exports.list = async (req, res) => {
         const slugRegex = new RegExp(slug);
         find.slug = slugRegex;
     }
+    // End tìm kiếm
+    // Phân trang
+
+    const objPagination = {
+        limitItem: 4,
+        currentPage: 1
+
+    }
+    const totalDocument = await Category.countDocuments(find);
+    objPagination.totalDocument = totalDocument;
+    objPagination.totalPage = Math.ceil(totalDocument / objPagination.limitItem);
+    if (req.query.page) {
+        const page = parseInt(req.query.page);
+        if (page > 0) {
+            objPagination.currentPage = page;
+        }
+    }
+    if (objPagination.currentPage > objPagination.totalPage) {
+        objPagination.currentPage = objPagination.totalPage;
+    }
+    objPagination.skip = (objPagination.currentPage - 1) * objPagination.limitItem;
+
+    objPagination.start = objPagination.skip + 1;
+    objPagination.end = Math.min((objPagination.skip + objPagination.limitItem), objPagination.totalDocument)
+    // End phân trang
     const accountAdminList = await AccountAdmin.find({}, 'fullName')
-    const categoryList = await Category.find(find).sort({ position: "desc" })
+
+    const categoryList = await Category.find(find).sort({ position: "desc" }).limit(objPagination.limitItem).skip(objPagination.skip)
     for (const item of categoryList) {
         if (item.createdBy) {
             const infoAccount = await AccountAdmin.findOne({
@@ -63,6 +96,7 @@ module.exports.list = async (req, res) => {
         pageTitle: "Trang danh sách danh mục",
         categoryList: categoryList,
         accountAdminList: accountAdminList,
+        objPagination: objPagination
 
     })
 }
