@@ -6,99 +6,103 @@ const convertToSlugHelper = require('../../helpers/convertToSlug.helper')
 const slugify = require('slugify')
 
 module.exports.list = async (req, res) => {
-    const find = {
-        deleted: false
-    }
-    // Lọc theo trạng thái
-    if (req.query.status) {
-        find.status = req.query.status;
-    }
-    // End Lọc theo trạng thái
-    // Lọc theo ngày tạo
-    if (req.query.createdBy) {
-        find.createdBy = req.query.createdBy;
-    }
-    // End lọc theo người tạo
-    // Lọc theo ngày tạo
-    const dataFilter = {};
-    if (req.query.startDate) {
-        const startDate = moment(req.query.startDate).startOf('Date').toDate();
-        dataFilter["$gte"] = startDate;
-    }
-    if (req.query.endDate) {
-        const endDate = moment(req.query.endDate).endOf('Date').toDate();
-        dataFilter["$lte"] = endDate;
-    }
-    // Object.keys : chuyển đổi 1 đối tượng thành 1 mảng gồm các key
-    if (Object.keys(dataFilter).length > 0) {
-        find.createdAt = dataFilter;
-    }
-    // End lọc theo ngày tạo
-    // Tìm kiếm
-    if (req.query.keyword) {
-        const slug = slugify(req.query.keyword, {
-            lower: true,
-            strict: true,
-            trim: true
-        });
-        const slugRegex = new RegExp(slug);
-        find.slug = slugRegex;
-    }
-    // End tìm kiếm
-    // Phân trang
-
-    const objPagination = {
-        limitItem: 4,
-        currentPage: 1
-
-    }
-    const totalDocument = await Category.countDocuments(find);
-    objPagination.totalDocument = totalDocument;
-    objPagination.totalPage = Math.ceil(totalDocument / objPagination.limitItem);
-    if (req.query.page) {
-        const page = parseInt(req.query.page);
-        if (page > 0) {
-            objPagination.currentPage = page;
+    try {
+        const find = {
+            deleted: false
         }
-    }
-    if (objPagination.currentPage > objPagination.totalPage) {
-        objPagination.currentPage = objPagination.totalPage;
-    }
-    objPagination.skip = (objPagination.currentPage - 1) * objPagination.limitItem;
+        // Lọc theo trạng thái
+        if (req.query.status) {
+            find.status = req.query.status;
+        }
+        // End Lọc theo trạng thái
 
-    objPagination.start = objPagination.skip + 1;
-    objPagination.end = Math.min((objPagination.skip + objPagination.limitItem), objPagination.totalDocument)
-    // End phân trang
-    const accountAdminList = await AccountAdmin.find({}, 'fullName')
+        // Lọc theo người tạo
+        if (req.query.createdBy) {
+            find.createdBy = req.query.createdBy;
+        }
+        // End lọc theo người tạo
 
-    const categoryList = await Category.find(find).sort({ position: "desc" }).limit(objPagination.limitItem).skip(objPagination.skip)
-    for (const item of categoryList) {
-        if (item.createdBy) {
-            const infoAccount = await AccountAdmin.findOne({
-                _id: item.createdBy,
+        // Lọc theo ngày tạo
+        const dataFilter = {};
+        if (req.query.startDate) {
+            const startDate = moment(req.query.startDate).startOf('Date').toDate();
+            dataFilter["$gte"] = startDate;
+        }
+        if (req.query.endDate) {
+            const endDate = moment(req.query.endDate).endOf('Date').toDate();
+            dataFilter["$lte"] = endDate;
+        }
 
-            })
-            item.createdByFullName = infoAccount.fullName;
+        if (Object.keys(dataFilter).length > 0) {
+            find.createdAt = dataFilter; // Object.keys : chuyển đổi 1 đối tượng thành 1 mảng gồm các key
+        }
+        // End lọc theo ngày tạo
+
+        // Tìm kiếm
+        if (req.query.keyword) {
+            const slug = slugify(req.query.keyword, {
+                lower: true,
+                strict: true,
+                trim: true
+            });
+            const slugRegex = new RegExp(slug, "i");
+            find.slug = slugRegex;
+        }
+        // End tìm kiếm
+
+        // Pagination
+        const totalRecords = await Category.countDocuments(find);
+        const limitItems = 4;
+        const totalPage = Math.ceil(totalRecords / limitItems);
+        let currentPage = 1;
+        if (req.query.page && req.query.page > 0) {
+            currentPage = req.query.page;
+        }
+        if (currentPage > totalPage && totalPage > 0) {
+            currentPage = totalPage;
+        }
+        const skip = (currentPage - 1) * limitItems;
+
+        const objPagination = {
+            totalPage: totalPage,
+            totalRecords: totalRecords
+        }
+        objPagination.start = skip + 1;
+        objPagination.end = Math.min((skip + limitItems), totalRecords)
+        // End Pagination
+
+        const accountAdminList = await AccountAdmin.find({}, 'fullName')
+        const categoryList = await Category.find(find).sort({ position: "desc" }).limit(limitItems).skip(skip)
+        for (const item of categoryList) {
+            if (item.createdBy) {
+                const infoAccount = await AccountAdmin.findOne({
+                    _id: item.createdBy,
+
+                })
+                item.createdByFullName = infoAccount.fullName;
+
+            }
+            if (item.updatedBy) {
+                const infoAccount = await AccountAdmin.findOne({
+                    _id: item.updatedBy,
+
+                })
+                item.updatedByFullName = infoAccount.fullName;
+            }
+            item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
+            item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
 
         }
-        if (item.updatedBy) {
-            const infoAccount = await AccountAdmin.findOne({
-                _id: item.updatedBy,
+        res.render("admin/pages/category-list", {
+            pageTitle: "Trang danh sách danh mục",
+            categoryList: categoryList,
+            accountAdminList: accountAdminList,
+            objPagination: objPagination
 
-            })
-            item.updatedByFullName = infoAccount.fullName;
-        }
-        item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
-        item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
-
+        })
+    } catch (error) {
+        console.error("Lỗi tại controller category list:", error);
     }
-    res.render("admin/pages/category-list", {
-        pageTitle: "Trang danh sách danh mục",
-        categoryList: categoryList,
-        accountAdminList: accountAdminList,
-        objPagination: objPagination
-
-    })
 }
 module.exports.create = async (req, res) => {
     const categoryList = await Category.find({
