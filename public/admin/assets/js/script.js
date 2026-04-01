@@ -1509,11 +1509,22 @@ if (changeMulti) {
   })
 }
 // End Change-Multi
-// {
-//   ids: ["145648dasdadwqeqw" , "fdsfds56443534asda"],
-//   status: "active"
-// }
 
+const searchInput = document.querySelector("[search-input]");
+if (searchInput) {
+  const url = new URL(window.location.href);
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const keyword = e.target.value;
+      if (keyword) {
+        url.searchParams.set('keyword', keyword);
+      } else {
+        url.searchParams.delete('keyword');
+      }
+      window.location.href = url.href;
+    }
+  })
+}
 
 
 

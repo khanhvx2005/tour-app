@@ -2,10 +2,10 @@ const categoryHelper = require("../../helpers/category.helper")
 const AccountAdmin = require("../../models/account-admin.model")
 const Category = require("../../models/category.model")
 const moment = require('moment');
-
+const convertToSlugHelper = require('../../helpers/convertToSlug.helper')
 module.exports.list = async (req, res) => {
     const find = {
-        deleted: false,
+        deleted: false
     }
     if (req.query.status) {
         find.status = req.query.status;
@@ -25,6 +25,22 @@ module.exports.list = async (req, res) => {
     // Object.keys : chuyển đổi 1 đối tượng thành 1 mảng gồm các key
     if (Object.keys(dataFilter).length > 0) {
         find.createdAt = dataFilter;
+    }
+    let keyword = "";
+    if (req.query.keyword) {
+        keyword = req.query.keyword;
+        const slug = convertToSlugHelper.convertToSlug(keyword);
+        const regexSlug = new RegExp(slug, "i")
+        const regexKeyword = new RegExp(keyword, "i");
+
+        find["$or"] = [
+            {
+                name: regexKeyword
+            },
+            {
+                slug: regexSlug
+            }
+        ];
     }
     const accountAdminList = await AccountAdmin.find({}, 'fullName')
     const categoryList = await Category.find(find).sort({ position: "desc" })
@@ -51,7 +67,8 @@ module.exports.list = async (req, res) => {
     res.render("admin/pages/category-list", {
         pageTitle: "Trang danh sách danh mục",
         categoryList: categoryList,
-        accountAdminList: accountAdminList
+        accountAdminList: accountAdminList,
+        keyword: keyword
     })
 }
 module.exports.create = async (req, res) => {
