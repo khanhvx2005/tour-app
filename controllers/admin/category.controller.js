@@ -32,7 +32,6 @@ module.exports.list = async (req, res) => {
         const slug = convertToSlugHelper.convertToSlug(keyword);
         const regexSlug = new RegExp(slug, "i")
         const regexKeyword = new RegExp(keyword, "i");
-
         find["$or"] = [
             {
                 name: regexKeyword
