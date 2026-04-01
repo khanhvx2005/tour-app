@@ -1524,6 +1524,10 @@ if (searchInput) {
       window.location.href = url.href;
     }
   })
+  const currentValue = url.searchParams.get('keyword');
+  if (currentValue) {
+    searchInput.value = currentValue;
+  }
 }
 
 

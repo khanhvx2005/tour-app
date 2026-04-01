@@ -24,6 +24,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^8.0.4",
     "pug": "^3.0.4",
+    "slugify": "^1.6.8",
     "unidecode": "^1.1.0"
   }
 }

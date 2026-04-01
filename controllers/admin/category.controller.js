@@ -3,6 +3,8 @@ const AccountAdmin = require("../../models/account-admin.model")
 const Category = require("../../models/category.model")
 const moment = require('moment');
 const convertToSlugHelper = require('../../helpers/convertToSlug.helper')
+const slugify = require('slugify')
+
 module.exports.list = async (req, res) => {
     const find = {
         deleted: false
@@ -26,20 +28,14 @@ module.exports.list = async (req, res) => {
     if (Object.keys(dataFilter).length > 0) {
         find.createdAt = dataFilter;
     }
-    let keyword = "";
     if (req.query.keyword) {
-        keyword = req.query.keyword;
-        const slug = convertToSlugHelper.convertToSlug(keyword);
-        const regexSlug = new RegExp(slug, "i")
-        const regexKeyword = new RegExp(keyword, "i");
-        find["$or"] = [
-            {
-                name: regexKeyword
-            },
-            {
-                slug: regexSlug
-            }
-        ];
+        const slug = slugify(req.query.keyword, {
+            lower: true,
+            strict: true,
+            trim: true
+        });
+        const slugRegex = new RegExp(slug);
+        find.slug = slugRegex;
     }
     const accountAdminList = await AccountAdmin.find({}, 'fullName')
     const categoryList = await Category.find(find).sort({ position: "desc" })
@@ -67,7 +63,7 @@ module.exports.list = async (req, res) => {
         pageTitle: "Trang danh sách danh mục",
         categoryList: categoryList,
         accountAdminList: accountAdminList,
-        keyword: keyword
+
     })
 }
 module.exports.create = async (req, res) => {
