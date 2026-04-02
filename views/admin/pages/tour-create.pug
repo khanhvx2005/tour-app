@@ -1,7 +1,9 @@
 extends ../layouts/default.pug
-include ../mixins/options.pug
 
+include ../mixins/select-tree.pug
+include ../mixins/alert.pug
 block main
+  +alert_success("5000")
   h1.box-title Tạo tour
 
   .section-8
@@ -13,8 +15,7 @@ block main
         label(class="inner-label" for="category") Danh mục
         select(id="category" name="category")
           option(value="") -- Chọn danh mục --
-          option(value="") Danh mục 1
-          option(value="") Danh mục 2
+          +select-tree(categoryList)
 
       .inner-group
         label(class="inner-label" for="position") Vị trí
@@ -22,8 +23,8 @@ block main
       .inner-group
         label(class="inner-label" for="status") Trạng thái
         select(id="status" name="status")
-          option(value="") Hoạt động
-          option(value="") Tạm dừng
+          option(value="active") Hoạt động
+          option(value="inactive") Tạm dừng
       .inner-group.inner-two-col
         label(class="inner-label" for="avatar") Ảnh đại diện
         div(class="inner-upload-image")
@@ -71,12 +72,11 @@ block main
       .inner-group
         label(class="inner-label") Những địa điểm có tour
         .inner-checkbox-list
-          .inner-checkbox-item
-            input(type="checkbox" name="locations" value="Hà Nội")
-            label Hà Nội
-          .inner-checkbox-item
-            input(type="checkbox" name="locations" value="Đà Nẵng")
-            label Đà Nẵng
+          each item in cityList
+            .inner-checkbox-item
+              input(type="checkbox" name="locations" value=item.id)
+              label #{item.name}
+          
       .inner-group
         label(class="inner-label" for="time") Thời gian
         input(type="text" id="time" name="time")
