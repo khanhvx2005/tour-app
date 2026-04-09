@@ -243,6 +243,45 @@ module.exports.edit = async (req, res) => {
     }
 }
 module.exports.editPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        if (!req.body.position) {
+            const count = await Tour.countDocuments({})
+            req.body.position = count + 1;
+        } else {
+            req.body.position = parseInt(req.body.position)
+        }
+        if (req.file) {
+            req.body.avatar = req.file.path;
+        } else {
+            delete req.body.avatar;
+        }
+        req.body.priceAdult = req.body.priceAdult ? parseInt(req.body.priceAdult) : 0;
+        req.body.priceChildren = req.body.priceChildren ? parseInt(req.body.priceChildren) : 0;
 
+        req.body.priceBaby = req.body.priceBaby ? parseInt(req.body.priceBaby) : 0;
+        req.body.priceNewAdult = req.body.priceNewAdult ? parseInt(req.body.priceNewAdult) : req.body.priceAdult;
+        req.body.priceNewChildren = req.body.priceBaby ? parseInt(req.body.priceNewChildren) : req.body.priceChildren;
+        req.body.priceNewBaby = req.body.priceBaby ? parseInt(req.body.priceNewBaby) : req.body.priceBaby;
+        req.body.stockAdult = req.body.stockAdult ? parseInt(req.body.stockAdult) : 0;
+        req.body.stockChildren = req.body.stockChildren ? parseInt(req.body.stockChildren) : 0;
+        req.body.stockBaby = req.body.stockBaby ? parseInt(req.body.stockBaby) : 0;
+        req.body.locations = req.body.locations ? JSON.parse(req.body.locations) : [];
+        req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
+        req.body.schedules = req.body.schedules ? JSON.parse(req.body.schedules) : [];
+        req.body.updatedBy = req.account.id;
+        await Tour.updateOne({
+            _id: id
+        }, req.body)
+        req.flash("success", "Cập nhập thành công!")
+        res.json({
+            code: "success"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id không hợp lệ"
+        })
+    }
 
 }

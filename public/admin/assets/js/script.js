@@ -560,7 +560,7 @@ if (tourEditForm) {
       formData.append("schedules", JSON.stringify(schedules));
 
       // images
-      // if (filePondMulti.images.getFiles().length > 0) {
+      // if(filePondMulti.images.getFiles().length > 0) {
       //   filePondMulti.images.getFiles().forEach(item => {
       //     formData.append("images", item.file);
       //   })
