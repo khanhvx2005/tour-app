@@ -1,0 +1,6 @@
+mixin pagination(pagination)
+    .section-7
+        span(class="inner-label") Hiển thị #{pagination.start}-#{pagination.end} của #{pagination.totalRecords}
+        select(class="inner-pagination" pagination)
+            - for(let i =1;i<=pagination.totalPage;i++)
+                option(value=i) Trang #{i}

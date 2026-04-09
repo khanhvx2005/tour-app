@@ -454,46 +454,6 @@ if (tourCreateForm) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      // Tạo FormData
-      //   const formData = new FormData();
-      //   formData.append("name", name);
-      //   formData.append("category", category);
-      //   formData.append("position", position);
-      //   formData.append("status", status);
-      //   formData.append("avatar", avatar);
-      //   formData.append("priceAdult", priceAdult);
-      //   formData.append("priceChildren", priceChildren);
-      //   formData.append("priceBaby", priceBaby);
-      //   formData.append("priceNewAdult", priceNewAdult);
-      //   formData.append("priceNewChildren", priceNewChildren);
-      //   formData.append("priceNewBaby", priceNewBaby);
-      //   formData.append("stockAdult", stockAdult);
-      //   formData.append("stockChildren", stockChildren);
-      //   formData.append("stockBaby", stockBaby);
-      //   formData.append("locations", JSON.stringify(locations));
-      //   formData.append("time", time);
-      //   formData.append("vehicle", vehicle);
-      //   formData.append("departureDate", departureDate);
-      //   formData.append("information", information);
-      //   formData.append("schedules", JSON.stringify(schedules));
-
       //   // images
       //   if (filePondMulti.images.getFiles().length > 0) {
       //     filePondMulti.images.getFiles().forEach(item => {
@@ -502,20 +462,7 @@ if (tourCreateForm) {
       //   }
       //   // End images
 
-      //   fetch(`/${pathAdmin}/tour/create`, {
-      //     method: "POST",
-      //     body: formData
-      //   })
-      //     .then(res => res.json())
-      //     .then(data => {
-      //       if (data.code == "error") {
-      //         alert(data.message);
-      //       }
 
-      //       if (data.code == "success") {
-      //         window.location.href = `/${pathAdmin}/tour/list`;
-      //       }
-      //     })
     })
     ;
 }
@@ -613,11 +560,11 @@ if (tourEditForm) {
       formData.append("schedules", JSON.stringify(schedules));
 
       // images
-      if (filePondMulti.images.getFiles().length > 0) {
-        filePondMulti.images.getFiles().forEach(item => {
-          formData.append("images", item.file);
-        })
-      }
+      // if (filePondMulti.images.getFiles().length > 0) {
+      //   filePondMulti.images.getFiles().forEach(item => {
+      //     formData.append("images", item.file);
+      //   })
+      // }
       // End images
 
       fetch(`/${pathAdmin}/tour/edit/${id}`, {
@@ -1603,6 +1550,41 @@ if (pagination) {
 
 }
 // End pagination
+const filterCategory = document.querySelector('[filter-category]');
+if (filterCategory) {
+  const url = new URL(window.location.href)
+  filterCategory.addEventListener('change', () => {
+    const value = filterCategory.value;
+    if (value) {
+      url.searchParams.set('category', value)
+    } else {
+      url.searchParams.delete('category')
+
+    }
+    window.location.href = url.href;
+  })
+  const currentValue = url.searchParams.get('category');
+  if (currentValue) {
+    filterCategory.value = currentValue;
+  }
+}
+const filterPrice = document.querySelector('[filter-price]');
+if (filterPrice) {
+  const url = new URL(window.location.href)
+  filterPrice.addEventListener('change', () => {
+    const value = filterPrice.value;
+    if (value) {
+      url.searchParams.set('price', value)
+    } else {
+      url.searchParams.delete('price')
+    }
+    window.location.href = url.href;
+  })
+  const currentValue = url.searchParams.get('price');
+  if (currentValue) {
+    filterPrice.value = currentValue;
+  }
+}
 
 
 

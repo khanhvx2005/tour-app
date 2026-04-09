@@ -1,5 +1,7 @@
 extends ../layouts/default.pug
 include ../mixins/alert.pug
+include ../mixins/filter-created-by.pug
+include ../mixins/pagination.pug
 block main
   +alert_success("5000")
   h1.box-title Quản lý danh mục
@@ -10,21 +12,12 @@ block main
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
       .inner-item
-        select(filter-status)
-          option(value="") Trạng thái
-          option(value="active") Hoạt động
-          option(value="inactive") Tạm dừng
+        include ../partials/filter-status.pug
       .inner-item
-        select(filter-created-by)
-          option(value="") Người tạo
-          each item in accountAdminList
-            option(value=item.id) #{item.fullName}
-          
+        +filter-created-by(accountAdminList)
 
       .inner-item.inner-date
-        input(type="date" filter-start-date)
-        span -
-        input(type="date" filter-end-date)
+        include ../partials/filter-date.pug
       .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
   //- End Section 4
@@ -32,18 +25,7 @@ block main
   //- Section 5
   .section-5
     .inner-wrap
-      .inner-change-status(
-        change-multi
-        data-api=`/${pathAdmin}/category/change-multi`
-      )
-        .inner-item
-          select
-            option(value="") -- Hành động --
-            option(value="active") Hoạt động
-            option(value="inactive") Dừng hoạt động
-            option(value="delete") Xóa
-        .inner-item
-          button Áp dụng
+      include ../partials/change-multi.pug
       .inner-search
         <i class="fa-solid fa-magnifying-glass"></i>
         input(type="text" placeholder="Tìm kiếm"  search-input)
@@ -103,11 +85,7 @@ block main
   //- End Section 6
 
   //- Section 7
-  .section-7
-    span(class="inner-label") Hiển thị #{objPagination.start}-#{objPagination.end} của #{objPagination.totalRecords}
-    select(class="inner-pagination" pagination)
-      - for(let i =1;i<=objPagination.totalPage;i++)
-        option(value=i) Trang #{i}
+  +pagination(objPagination)
       
   //- End Section 7
   

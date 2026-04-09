@@ -2,10 +2,115 @@ const Category = require("../../models/category.model")
 const categoryHelper = require('../../helpers/category.helper')
 const City = require("../../models/city.model")
 const Tour = require('../../models/tour.model')
+const AccountAdmin = require('../../models/account-admin.model')
+const moment = require('moment')
 module.exports.list = async (req, res) => {
-    res.render("admin/pages/tour-list", {
-        pageTitle: "Trang danh sách tour"
-    })
+    try {
+        const find = {
+            deleted: false
+        }
+        // Bộ lọc trạng thái và người tạo
+        if (req.query.status) find.status = req.query.status;
+        if (req.query.createdBy) find.createdBy = req.query.createdBy;
+        // End Bộ lọc trạng thái và người tạo
+
+        // Bộ lọc theo thời gian tạo
+        const dataFilterDate = {};
+        if (req.query.startDate) {
+            const startDate = moment(req.query.startDate).startOf('day').toDate();
+            dataFilterDate['$gte'] = startDate;
+        }
+        if (req.query.endDate) {
+            const endDate = moment(req.query.endDate).endOf('day').toDate();
+            dataFilterDate['$lte'] = endDate;
+        }
+        if (Object.keys(dataFilterDate).length > 0) {
+            find.createdAt = dataFilterDate;
+        }
+        // End Bộ lọc theo thời gian tạo
+
+        // Bộ lọc theo danh mục
+        if (req.query.category) {
+            find.category = req.query.category;
+        }
+        // End Bộ lọc theo danh mục
+
+        // Bộ lọc theo mức giá
+
+        if (req.query.price) {
+            const price = req.query.price.split('-');
+            if (price.length === 2) {
+                const minPrice = parseInt(price[0]);
+                const maxPrice = parseInt(price[1]);
+                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                    find.priceNewAdult = {
+                        $gte: minPrice,
+                        $lte: maxPrice
+                    };
+                }
+
+            }
+        }
+
+        // End Bộ lọc theo mức giá
+
+        // Pagination
+        const totalRecords = await Tour.countDocuments(find);
+        const limitItems = 4;
+        const totalPage = Math.ceil(totalRecords / limitItems)
+
+        let currentPage = 1;
+        if (req.query.page && req.query.page > 0) {
+            currentPage = req.query.page;
+        }
+        if (currentPage > totalPage && totalPage > 0) {
+            currentPage = totalPage;
+        }
+        const skip = (currentPage - 1) * limitItems;
+        const pagination = {
+            totalPage: totalPage,
+            totalRecords: totalRecords,
+            start: skip + 1,
+            end: Math.min((skip + limitItems), totalRecords)
+        }
+        // End Pagination
+        // Lấy danh sách danh mục 
+        const categoryList = await Category.find({ deleted: false })
+        const newCategoryList = categoryHelper.buildCategoryTree(categoryList);
+        const tourList = await Tour
+            .find(find)
+            .sort({
+                position: 'desc'
+            })
+            .limit(limitItems)
+            .skip(skip)
+        for (const item of tourList) {
+            if (item.createdBy) {
+                const infoAccountCreated = await AccountAdmin.findOne({
+                    _id: item.createdBy
+                })
+                item.createdByFullname = infoAccountCreated.fullName;
+            }
+            if (item.updatedBy) {
+                const infoAccountUpdated = await AccountAdmin.findOne({
+                    _id: item.updatedBy
+                })
+                item.updatedByFullname = infoAccountUpdated.fullName;
+            }
+            item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
+            item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY")
+        }
+        const accountAdminList = await AccountAdmin.find({}, 'fullName')
+        res.render("admin/pages/tour-list", {
+            pageTitle: "Trang danh sách tour",
+            tourList: tourList,
+            accountAdminList: accountAdminList,
+            categoryList: newCategoryList,
+            pagination: pagination
+        })
+    } catch (error) {
+        console.log("Lỗi tại controller list", error);
+    }
 }
 module.exports.create = async (req, res) => {
     try {
@@ -60,4 +165,84 @@ module.exports.createPost = async (req, res) => {
     res.json({
         code: "success",
     })
+}
+module.exports.changeMultiPatch = async (req, res) => {
+
+
+    try {
+        const { ids, status } = req.body;
+        switch (status) {
+            case "active":
+                await Tour.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        status: status,
+                        updatedBy: req.account.id,
+                        updatedAt: Date.now()
+                    })
+                req.flash('success', "Đổi trạng thái thành công!")
+                break;
+            case "inactive":
+                await Tour.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        status: status,
+                        updatedBy: req.account.id,
+                        updatedAt: Date.now()
+                    })
+                req.flash('success', "Đổi trạng thái thành công!")
+                break;
+            case "delete":
+                await Tour.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        deleted: true,
+                        deletedBy: req.account.id,
+                        deletedAt: Date.now()
+                    })
+                req.flash('success', "Xóa thành công!")
+                break;
+
+            default:
+                break;
+        }
+
+        res.json({
+            code: "success",
+        })
+    } catch (error) {
+        console.log("Có lỗi trong controller changeMultiPatch", error)
+    }
+}
+module.exports.edit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const tourDetail = await Tour.findOne({
+            _id: id
+        })
+
+        if (tourDetail) {
+            tourDetail.departureDateFormat = moment(tourDetail.departureDate).format("YYYY-MM-DD")
+            const cityList = await City.find({})
+            const categoryList = await Category.find({
+                deleted: false
+            })
+            const newCategoryList = categoryHelper.buildCategoryTree(categoryList)
+            res.render('admin/pages/tour-edit', { pageTitle: "Trang chỉnh sửa tour", tourDetail: tourDetail, cityList: cityList, categoryList: newCategoryList })
+        } else {
+            res.redirect(`/${pathAdmin}/tour/list`)
+
+        }
+
+    } catch (error) {
+        console.log("Lỗi controller edit", error)
+        res.redirect(`/${pathAdmin}/tour/list`)
+    }
+}
+module.exports.editPatch = async (req, res) => {
+
+
 }

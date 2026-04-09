@@ -1,0 +1,12 @@
+.inner-change-status(
+    change-multi
+    data-api = `/${pathAdmin}/tour/change-multi`
+    )
+    .inner-item
+        select
+            option(value="") -- Hành động --
+            option(value="active") Hoạt động
+            option(value="inactive") Dừng hoạt động
+            option(value="delete") Xóa
+    .inner-item
+        button Áp dụng
