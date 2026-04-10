@@ -18,8 +18,8 @@ router.patch(
     upload.single('avatar'),
     tourValidate.createPost,
     tourController.editPatch
-)// router.get('/create', categoryController.create)
-
+)
+router.patch('/delete/:id', tourController.deletePatch)
 // router.post('/revenue-chart', dashboardController.revenueChartPost)
 
 module.exports = router;

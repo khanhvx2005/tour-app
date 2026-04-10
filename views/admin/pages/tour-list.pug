@@ -95,7 +95,9 @@ block main
                     href = `/${pathAdmin}/tour/edit/${item.id}`
                   ) <i class="fa-regular fa-pen-to-square"></i>
                   button(
-                    class="inner-delete"                    
+                    class="inner-delete"  
+                    data-api=`/${pathAdmin}/tour/delete/${item.id}`
+                    button-delete                  
                   ) <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
