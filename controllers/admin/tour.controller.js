@@ -75,6 +75,17 @@ module.exports.list = async (req, res) => {
             end: Math.min((skip + limitItems), totalRecords)
         }
         // End Pagination
+        // Tìm kiếm
+        if (req.query.keyword) {
+            const slug = slugify(req.query.keyword, {
+                lower: true,
+                strict: true,
+                trim: true
+            })
+            const regexSlug = new RegExp(slug, "i")
+            find.slug = regexSlug;
+        }
+        // End tìm kiếm
         // Lấy danh sách danh mục 
         const categoryList = await Category.find({ deleted: false })
         const newCategoryList = categoryHelper.buildCategoryTree(categoryList);
