@@ -20,6 +20,9 @@ router.patch(
     tourController.editPatch
 )
 router.patch('/delete/:id', tourController.deletePatch)
+router.patch('/undo/:id', tourController.undoPatch)
+router.patch('/delete-destroy/:id', tourController.deleteDestroyPatch)
+router.patch('/trash/change-multi', tourController.trashChangeMultiPatch)
 // router.post('/revenue-chart', dashboardController.revenueChartPost)
 
 module.exports = router;

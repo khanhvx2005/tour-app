@@ -4,6 +4,7 @@ const City = require("../../models/city.model")
 const Tour = require('../../models/tour.model')
 const AccountAdmin = require('../../models/account-admin.model')
 const moment = require('moment')
+const slugify = require('slugify')
 module.exports.list = async (req, res) => {
     try {
         const find = {
@@ -130,10 +131,66 @@ module.exports.create = async (req, res) => {
 
 }
 module.exports.trash = async (req, res) => {
+    const find = {
+        deleted: true
+    }
+    if (req.query.keyword) {
+        const slug = slugify(req.query.keyword, {
+            lower: true,
+            strict: true,
+            trim: true
+        })
+        const regexSlug = new RegExp(slug, "i")
+        find.slug = regexSlug;
+    }
+    const limitItems = 4;
+    const totalRecords = await Tour.countDocuments(find)
+    const totalPage = Math.ceil(totalRecords / limitItems);
+    const currentPage = 1;
+    if (req.query.page && req.query.page > 0) {
+        currentPage = parseInt(req.query.page)
+    }
+    if (currentPage > totalPage && totalPage > 0) {
+        currentPage = totalPage;
+    }
+    const skip = (currentPage - 1) * limitItems;
+    const pagination = {
+        totalRecords: totalRecords,
+        totalPage: totalPage,
+        start: skip + 1,
+        end: Math.min(skip + 1, totalRecords)
+    }
+    if (totalRecords === 0) {
+        pagination.start = 0;
+    }
+    const tourListDeleted = await Tour
+        .find(find)
+        .sort({
+            position: 'desc'
+        })
+        .limit(limitItems)
+        .skip(skip)
+    for (const item of tourListDeleted) {
+        if (item.createdBy) {
+            const infoAccountCreated = await AccountAdmin.findOne({
+                _id: item.createdBy
+            })
+            item.createdByFullname = infoAccountCreated.fullName;
+        }
+        if (item.deletedBy) {
+            const infoAccountDeleted = await AccountAdmin.findOne({
+                _id: item.deletedBy
+            })
+            item.deletedByFullname = infoAccountDeleted.fullName;
+        }
+        item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
+        item.deletedAtFormat = moment(item.deletedAt).format("HH:mm - DD/MM/YYYY")
 
-
+    }
     res.render("admin/pages/tour-trash", {
         pageTitle: "Thùng rác tour",
+        tourListDeleted: tourListDeleted,
+        pagination: pagination
 
     })
 }
@@ -305,4 +362,76 @@ module.exports.deletePatch = async (req, res) => {
             message: "Id không hợp lệ"
         })
     }
+}
+module.exports.undoPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Tour.updateOne({
+            _id: id
+        }, {
+            deleted: false,
+        })
+        req.flash("success", "Khôi phục thành công")
+        res.json({
+            code: "success"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id không hợp lệ"
+        })
+    }
+
+}
+module.exports.deleteDestroyPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Tour.deleteOne({
+            _id: id
+        })
+        req.flash("success", "Xóa vĩnh viễn thành công")
+        res.json({
+            code: "success",
+
+        })
+    } catch (error) {
+        res.json({
+            code: "success",
+            message: "Id không hợp lệ!"
+        })
+    }
+}
+module.exports.trashChangeMultiPatch = async (req, res) => {
+    try {
+        const { ids, status } = req.body;
+        switch (status) {
+            case 'undo':
+                await Tour.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    deleted: false
+                })
+                req.flash("success", "Khôi phục thành công!")
+                break;
+            case 'delete-destroy':
+                await Tour.deleteOne({
+                    _id: { $in: ids }
+                })
+                req.flash("success", "Xóa vĩnh viễn tour thành công!")
+                break;
+            default:
+                break;
+        }
+        res.json({
+            code: "success",
+            message: "Thành công!"
+
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Id không hợp lệ"
+        })
+    }
+
 }
