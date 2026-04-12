@@ -79,7 +79,8 @@ module.exports.list = async (req, res) => {
                     _id: item.createdBy,
 
                 })
-                item.createdByFullName = infoAccount.fullName;
+                if (infoAccount) item.createdByFullName = infoAccount.fullName;
+
 
             }
             if (item.updatedBy) {
@@ -87,7 +88,7 @@ module.exports.list = async (req, res) => {
                     _id: item.updatedBy,
 
                 })
-                item.updatedByFullName = infoAccount.fullName;
+                if (infoAccount) item.updatedByFullName = infoAccount.fullName;
             }
             item.createdAtFormat = moment(item.createdAt).format('HH:mm - DD/MM/YYYY')
             item.updatedAtFormat = moment(item.updatedAt).format('HH:mm - DD/MM/YYYY')
@@ -230,7 +231,9 @@ module.exports.changeStatus = async (req, res) => {
         await Category.updateOne({
             _id: id
         }, {
-            status: status
+            status: status,
+            updatedBy: req.account.id,
+            updatedAt: Date.now()
         })
         req.flash("success", "Đổi trạng thái thành công!")
         res.json({
@@ -246,13 +249,15 @@ module.exports.changeStatus = async (req, res) => {
 }
 module.exports.changeMultiPatch = async (req, res) => {
     try {
-        const { status, ids } = req.body;
+        const { ids, status } = req.body;
         switch (status) {
             case "active":
                 await Category.updateMany({
                     _id: { $in: ids }
                 }, {
-                    status: status
+                    status: status,
+                    updatedBy: req.account.id,
+                    updatedAt: Date.now()
                 })
                 req.flash("success", "Đổi trạng thái thành công!")
 
@@ -261,7 +266,9 @@ module.exports.changeMultiPatch = async (req, res) => {
                 await Category.updateMany({
                     _id: { $in: ids }
                 }, {
-                    status: status
+                    status: status,
+                    updatedBy: req.account.id,
+                    updatedAt: Date.now()
                 })
                 req.flash("success", "Đổi trạng thái thành công!")
 
