@@ -213,6 +213,81 @@ module.exports.accountAdminChangeMulti = async (req, res) => {
         })
     }
 }
+module.exports.accountAdminEdit = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const accountAdminDetail = await AccountAdmin.findOne({
+            _id: id
+        })
+        const roleList = await Role.find({
+            deleted: false
+        })
+        res.render('admin/pages/setting-account-admin-edit', {
+            pageTitle: "Trang chỉnh sửa tài khoản",
+            accountAdminDetail: accountAdminDetail,
+            roleList: roleList
+        })
+    } catch (error) {
+        res.redirect(`/${pathAdmin}/setting/account-admin/list`)
+    }
+}
+module.exports.accountAdminEditPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const exitsAccount = await AccountAdmin.findOne({
+            _id: { $ne: id },
+            email: req.body.email
+        })
+        if (exitsAccount) {
+            res.json({
+                code: "error",
+                message: "Email đã tồn tại trong hệ thống"
+            })
+            return;
+        }
+
+        if (req.file) {
+            req.body.avatar = req.file.path;
+        } else {
+            delete req.body.avatar;
+        }
+        req.body.updatedBy = req.account.id;
+        await AccountAdmin.updateOne({
+            _id: id
+        }, req.body)
+        req.flash("success", "Cập nhập thành công")
+        res.json({
+            code: "success"
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "id không hợp lệ"
+        })
+    }
+}
+module.exports.accountAdminDeletePatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await AccountAdmin.updateOne({
+
+            _id: id
+        }, {
+            deleted: true,
+            updatedBy: req.account.id
+        })
+        req.flash("success", "Xóa thành công")
+        res.json({
+            code: "success",
+
+        })
+    } catch (error) {
+        res.json({
+            code: "success",
+            message: "id không hợp lệ"
+        })
+    }
+}
 module.exports.roleList = async (req, res) => {
     const find = {
         deleted: false

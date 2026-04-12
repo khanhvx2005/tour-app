@@ -1,7 +1,10 @@
 extends ../layouts/default.pug
 include ../mixins/pagination.pug
+include ../mixins/alert.pug
 
 block main
+  +alert_success("5000")
+
   h1.box-title Tài khoản quản trị
 
   //- Section 4
@@ -87,13 +90,13 @@ block main
               td
                 .inner-buttons
                   a(
-                    href=`/${pathAdmin}/setting/account-admin/edit` 
+                    href=`/${pathAdmin}/setting/account-admin/edit/${item.id}` 
                     class="inner-edit"
                   ) <i class="fa-regular fa-pen-to-square"></i>
                   button(
                     class="inner-delete"
                     button-delete 
-                    data-api=`/${pathAdmin}/setting/account-admin/delete`
+                    data-api=`/${pathAdmin}/setting/account-admin/delete/${item.id}`
                   ) <i class="fa-regular fa-trash-can"></i>
   //- End Section 6
 
