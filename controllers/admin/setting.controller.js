@@ -157,6 +157,16 @@ module.exports.accountAdminChangeMulti = async (req, res) => {
     try {
         const { ids, status } = req.body;
         switch (status) {
+            case "initial":
+                await AccountAdmin.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        status: status,
+                        updatedBy: req.account.id
+                    })
+                req.flash("success", "Đổi trạng thái thành công")
+                break;
             case "active":
                 await AccountAdmin.updateMany({
                     _id: { $in: ids }
