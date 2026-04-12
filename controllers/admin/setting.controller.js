@@ -1,6 +1,7 @@
 const Role = require("../../models/role.model")
 const WebsiteInfo = require("../../models/setting-website-info.model")
 const permissionConfig = require('../../config/permission')
+const slugify = require("slugify")
 module.exports.list = async (req, res) => {
 
     res.render("admin/pages/setting-list", {
@@ -55,10 +56,23 @@ module.exports.accountAdminCreate = async (req, res) => {
     })
 }
 module.exports.roleList = async (req, res) => {
-
+    const find = {
+        deleted: false
+    }
+    if (req.query.keyword) {
+        const slug = slugify(req.query.keyword, {
+            lower: true,
+            strict: true,
+            trim: true
+        })
+        const slugRegex = new RegExp(slug, "i");
+        find.slug = slugRegex;
+    }
+    const roleList = await Role.find(find)
 
     res.render("admin/pages/setting-role-list", {
         pageTitle: "Nhóm quyền",
+        roleList: roleList
     })
 }
 module.exports.roleCreate = async (req, res) => {
@@ -79,4 +93,29 @@ module.exports.roleCreatePost = async (req, res) => {
         code: "success",
     })
 
+}
+module.exports.roleChangeMultiPatch = async (req, res) => {
+    try {
+        const { ids, status } = req.body;
+        switch (status) {
+            case 'delete':
+                await Role.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    deleted: true,
+                    deletedBy: req.account.id,
+                    deletedAt: Date.now()
+                })
+                req.flash("success", "Xóa nhóm quyền thành công")
+                break;
+
+            default:
+                break;
+        }
+        res.json({
+            code: "success"
+        })
+    } catch (error) {
+        console.log("Có lỗi controller roleChangeMultiPatch  ", error)
+    }
 }

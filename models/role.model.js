@@ -11,7 +11,12 @@ const schema = new mongoose.Schema(
         createdBy: String,
         updatedBy: String,
         deletedBy: String,
-        deletedAt: Date
+        deletedAt: Date,
+        slug: {
+            type: String,
+            slug: "name",
+            unique: true
+        }
 
 
     }, { timestamps: true }

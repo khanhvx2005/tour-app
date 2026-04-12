@@ -21,5 +21,6 @@ router.get('/account-admin/create', settingController.accountAdminCreate)
 router.get('/role/list', settingController.roleList)
 router.get('/role/create', settingController.roleCreate)
 router.post('/role/create', settingController.roleCreatePost)
+router.patch('/role/change-multi', settingController.roleChangeMultiPatch)
 
 module.exports = router;
