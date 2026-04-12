@@ -119,3 +119,59 @@ module.exports.roleChangeMultiPatch = async (req, res) => {
         console.log("Có lỗi controller roleChangeMultiPatch  ", error)
     }
 }
+module.exports.roleDeletePatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Role.updateOne({
+            _id: id
+        }, {
+            deleted: true,
+            deletedBy: req.account.id,
+            deletedAt: Date.now()
+
+        })
+        req.flash("success", "Xóa nhóm quyền thành công")
+        res.json({
+            code: "success",
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "id không hợp lệ"
+        })
+    }
+}
+module.exports.roleEdit = async (req, res) => {
+    const id = req.params.id;
+    const roleDetail = await Role.findOne({
+        _id: id,
+    })
+    res.render('admin/pages/setting-role-edit', {
+        pageTitle: "Trang chỉnh sửa nhóm quyền",
+        roleDetail: roleDetail,
+        permissionList: permissionConfig.permissionList
+    }
+    )
+}
+module.exports.roleEditPatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+        req.body.updatedBy = req.account.id;
+
+        await Role.updateOne({
+            _id: id
+        }, req.body)
+        req.flash("success", "Cập nhập nhóm quyền thành công")
+        res.json({
+            code: "success"
+
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "id không hợp lệ"
+
+        })
+    }
+}
+
