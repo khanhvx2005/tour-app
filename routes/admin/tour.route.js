@@ -1,8 +1,6 @@
 const router = require('express').Router();
-
 const tourController = require("../../controllers/admin/tour.controller");
 const multer = require('multer');
-
 const cloudinaryHelper = require('../../helpers/uploadCloudinary.helper')
 const upload = multer({ storage: cloudinaryHelper.storage });
 const tourValidate = require('../../validates/admin/tour.validate')

@@ -1,6 +1,6 @@
 const AccountAdmin = require("../../models/account-admin.model");
 const jwt = require('jsonwebtoken');
-
+const Role = require('../../models/role.model')
 module.exports.verifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.token;
@@ -19,6 +19,12 @@ module.exports.verifyToken = async (req, res, next) => {
             res.clearCookie("token")
             res.redirect(`/${pathAdmin}/account/login`)
             return;
+        }
+        const infoRole = await Role.findOne({
+            _id: exitsAccount.role
+        })
+        if (infoRole) {
+            res.locals.role = infoRole;
         }
         req.account = exitsAccount;
         res.locals.account = exitsAccount;

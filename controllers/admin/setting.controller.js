@@ -219,6 +219,10 @@ module.exports.accountAdminEdit = async (req, res) => {
         const accountAdminDetail = await AccountAdmin.findOne({
             _id: id
         })
+        if (!accountAdminDetail) {
+            res.redirect(`/${pathAdmin}/setting/account-admin/list`)
+            return;
+        }
         const roleList = await Role.find({
             deleted: false
         })
@@ -252,6 +256,10 @@ module.exports.accountAdminEditPatch = async (req, res) => {
             delete req.body.avatar;
         }
         req.body.updatedBy = req.account.id;
+        if (req.body.password) {
+            const salt = bcrypt.genSaltSync(10);
+            req.body.password = bcrypt.hashSync(req.body.password, salt);
+        }
         await AccountAdmin.updateOne({
             _id: id
         }, req.body)
