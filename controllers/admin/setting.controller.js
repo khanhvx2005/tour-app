@@ -4,8 +4,8 @@ const permissionConfig = require('../../config/permission')
 const slugify = require("slugify")
 const AccountAdmin = require("../../models/account-admin.model")
 const bcrypt = require("bcryptjs")
+const moment = require("moment")
 module.exports.list = async (req, res) => {
-
     res.render("admin/pages/setting-list", {
         pageTitle: "Cài đặt chung",
     })
@@ -47,9 +47,57 @@ module.exports.websiteInfoPatch = async (req, res) => {
     })
 }
 module.exports.accountAdminList = async (req, res) => {
-    const accountAdminList = await AccountAdmin.find({
+    const find = {
+        deleted: false,
+
+    }
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+    if (req.query.role) {
+        find.role = req.query.role;
+    }
+    if (req.query.keyword) {
+        const keywordRegex = new RegExp(req.query.keyword, "i")
+        find.fullName = keywordRegex;
+    }
+    const dataFilter = {};
+    if (req.query.startDate) {
+        const startDate = moment(req.query.startDate).startOf('day').toDate();
+        dataFilter['$gte'] = startDate;
+    }
+    if (req.query.endDate) {
+        const endDate = moment(req.query.endDate).endOf('day').toDate();
+        dataFilter['$lte'] = endDate;
+    }
+    if (Object.keys(dataFilter).length > 0) {
+        find.createdAt = dataFilter;
+    }
+    const limitItems = 4;
+    const totalRecords = await AccountAdmin.countDocuments(find)
+    const totalPage = Math.ceil(totalRecords / limitItems);
+    let currentPage = 1;
+    if (req.query.page && req.query.page > 0) {
+        currentPage = req.query.page;
+    }
+    if (currentPage > totalPage && totalPage > 0) {
+        currentPage = totalPage;
+    }
+    const skip = (currentPage - 1) * limitItems;
+
+    const pagination = {
+        totalRecords: totalRecords,
+        totalPage: totalPage,
+        start: skip + 1,
+        end: Math.min(skip + limitItems, totalRecords)
+    }
+    if (totalRecords == 0) {
+        pagination.start = 0;
+    }
+    const roleList = await Role.find({
         deleted: false
     })
+    const accountAdminList = await AccountAdmin.find(find).sort({ createdAt: 'desc' }).limit(limitItems).skip(skip)
     for (const item of accountAdminList) {
         if (item.role) {
             const infoRole = await Role.findOne({
@@ -64,7 +112,9 @@ module.exports.accountAdminList = async (req, res) => {
     }
     res.render("admin/pages/setting-account-admin-list", {
         pageTitle: "Tài khoản quản trị",
-        accountAdminList: accountAdminList
+        accountAdminList: accountAdminList,
+        roleList: roleList,
+        pagination: pagination
     })
 }
 module.exports.accountAdminCreate = async (req, res) => {
@@ -102,6 +152,56 @@ module.exports.accountAdminCreatePost = async (req, res) => {
     }
 
 
+}
+module.exports.accountAdminChangeMulti = async (req, res) => {
+    try {
+        const { ids, status } = req.body;
+        switch (status) {
+            case "active":
+                await AccountAdmin.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        status: status,
+                        updatedBy: req.account.id
+                    })
+                req.flash("success", "Đổi trạng thái thành công")
+                break;
+            case "inactive":
+                await AccountAdmin.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        status: status,
+                        updatedBy: req.account.id
+                    })
+                req.flash("success", "Đổi trạng thái thành công")
+
+                break;
+            case "delete":
+                await AccountAdmin.updateMany({
+                    _id: { $in: ids }
+                },
+                    {
+                        deleted: true,
+                        deletedBy: req.account.id,
+                        deletedAt: Date.now()
+                    })
+                req.flash("success", "Xóa thành công")
+                break;
+
+            default:
+                break;
+        }
+        res.json({
+            code: "success",
+        })
+    } catch (error) {
+        res.json({
+            code: "error",
+            message: "Lỗi"
+        })
+    }
 }
 module.exports.roleList = async (req, res) => {
     const find = {

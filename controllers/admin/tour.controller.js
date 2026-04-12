@@ -249,7 +249,6 @@ module.exports.changeMultiPatch = async (req, res) => {
                     {
                         status: status,
                         updatedBy: req.account.id,
-                        updatedAt: Date.now()
                     })
                 req.flash('success', "Đổi trạng thái thành công!")
                 break;
@@ -260,7 +259,6 @@ module.exports.changeMultiPatch = async (req, res) => {
                     {
                         status: status,
                         updatedBy: req.account.id,
-                        updatedAt: Date.now()
                     })
                 req.flash('success', "Đổi trạng thái thành công!")
                 break;
