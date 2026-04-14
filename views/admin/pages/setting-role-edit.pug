@@ -1,6 +1,9 @@
 extends ../layouts/default.pug
+include ../mixins/alert.pug
 
 block main
+  +alert_success("5000")
+
   h1.box-title Chỉnh sửa nhóm quyền
 
   .section-8

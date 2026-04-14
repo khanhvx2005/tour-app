@@ -26,8 +26,10 @@ module.exports.verifyToken = async (req, res, next) => {
         if (infoRole) {
             res.locals.role = infoRole;
         }
+        req.permissions = infoRole.permissions;
         req.account = exitsAccount;
         res.locals.account = exitsAccount;
+        res.locals.permissions = infoRole.permissions;
         next();
     } catch (error) {
         res.clearCookie("token")
