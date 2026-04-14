@@ -39,11 +39,11 @@ module.exports.websiteInfoPatch = async (req, res) => {
         const newRecord = new WebsiteInfo(req.body)
         await newRecord.save();
     }
-
+    req.flash("success", "Cập nhập thành công")
 
     res.json({
         code: "success",
-        message: "Cập nhập thành công"
+
     })
 }
 module.exports.accountAdminList = async (req, res) => {
