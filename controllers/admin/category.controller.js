@@ -119,7 +119,7 @@ module.exports.create = async (req, res) => {
     })
 }
 module.exports.createPost = async (req, res) => {
-    if (!permissions.includes("category_create")) {
+    if (!req.permissions.includes("category_create")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -172,7 +172,7 @@ module.exports.edit = async (req, res) => {
 }
 
 module.exports.editPatch = async (req, res) => {
-    if (!permissions.includes("category_edit")) {
+    if (!req.permissions.includes("category_edit")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -217,7 +217,7 @@ module.exports.editPatch = async (req, res) => {
 
 }
 module.exports.deletePatch = async (req, res) => {
-    if (!permissions.includes("category_delete")) {
+    if (!req.permissions.includes("category_delete")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -249,7 +249,7 @@ module.exports.deletePatch = async (req, res) => {
     }
 }
 module.exports.changeStatus = async (req, res) => {
-    if (!permissions.includes("category_edit")) {
+    if (!req.permissions.includes("category_edit")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -281,7 +281,7 @@ module.exports.changeMultiPatch = async (req, res) => {
         const { ids, status } = req.body;
         switch (status) {
             case "active":
-                if (!permissions.includes("category_edit")) {
+                if (!req.permissions.includes("category_edit")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"
@@ -298,7 +298,7 @@ module.exports.changeMultiPatch = async (req, res) => {
 
                 break;
             case "inactive":
-                if (!permissions.includes("category_edit")) {
+                if (!req.permissions.includes("category_edit")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"
@@ -315,7 +315,7 @@ module.exports.changeMultiPatch = async (req, res) => {
 
                 break;
             case "delete":
-                if (!permissions.includes("category_delete")) {
+                if (!req.permissions.includes("category_delete")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"

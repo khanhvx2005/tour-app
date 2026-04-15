@@ -208,7 +208,7 @@ module.exports.trash = async (req, res) => {
     })
 }
 module.exports.createPost = async (req, res) => {
-    if (!permissions.includes("tour_create")) {
+    if (!req.permissions.includes("tour_create")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -250,7 +250,7 @@ module.exports.changeMultiPatch = async (req, res) => {
         const { ids, status } = req.body;
         switch (status) {
             case "active":
-                if (!permissions.includes("tour_edit")) {
+                if (!req.permissions.includes("tour_edit")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"
@@ -267,7 +267,7 @@ module.exports.changeMultiPatch = async (req, res) => {
                 req.flash('success', "Đổi trạng thái thành công!")
                 break;
             case "inactive":
-                if (!permissions.includes("tour_edit")) {
+                if (!req.permissions.includes("tour_edit")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"
@@ -284,7 +284,7 @@ module.exports.changeMultiPatch = async (req, res) => {
                 req.flash('success', "Đổi trạng thái thành công!")
                 break;
             case "delete":
-                if (!permissions.includes("tour_delete")) {
+                if (!req.permissions.includes("tour_delete")) {
                     res.json({
                         code: "error",
                         message: "Bạn không có quyền sử dụng tính năng này!"
@@ -339,7 +339,7 @@ module.exports.edit = async (req, res) => {
     }
 }
 module.exports.editPatch = async (req, res) => {
-    if (!permissions.includes("tour_edit")) {
+    if (!req.permissions.includes("tour_edit")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -389,7 +389,7 @@ module.exports.editPatch = async (req, res) => {
 
 }
 module.exports.deletePatch = async (req, res) => {
-    if (!permissions.includes("tour_delete")) {
+    if (!req.permissions.includes("tour_delete")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -417,7 +417,7 @@ module.exports.deletePatch = async (req, res) => {
     }
 }
 module.exports.undoPatch = async (req, res) => {
-    if (!permissions.includes("tour_trash")) {
+    if (!req.permissions.includes("tour_trash")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
@@ -444,7 +444,7 @@ module.exports.undoPatch = async (req, res) => {
 
 }
 module.exports.deleteDestroyPatch = async (req, res) => {
-    if (!permissions.includes("tour_trash")) {
+    if (!req.permissions.includes("tour_trash")) {
         res.json({
             code: "error",
             message: "Bạn không có quyền sử dụng tính năng này!"
