@@ -1,0 +1,7 @@
+mixin sub-menu(listCategory)
+    each item in listCategory 
+        li  
+            a.active(href=`/category/${item.slug}`) #{item.name}
+            if item.children && item.children.length > 0
+                ul 
+                    +sub-menu(item.children)
