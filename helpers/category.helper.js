@@ -1,3 +1,4 @@
+const Category = require('../models/category.model')
 const buildCategoryTree = (arr, parentId = "") => {
     const tree = [];
     arr.forEach(item => {
@@ -15,3 +16,20 @@ const buildCategoryTree = (arr, parentId = "") => {
     return tree;
 }
 module.exports.buildCategoryTree = buildCategoryTree;
+const getSubCategory = async (category) => {
+    const subs = await Category.find({
+        parent: category,
+        deleted: false,
+        status: "active"
+    })
+    let allSubs = [...subs];
+    for (const sub of subs) {
+        const childs = await getSubCategory(sub.id)
+        allSubs = allSubs.concat(childs)
+    }
+    return allSubs;
+}
+module.exports.getCategory = async (category) => {
+    const result = await getSubCategory(category)
+    return result;
+}

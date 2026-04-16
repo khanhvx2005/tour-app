@@ -56,12 +56,13 @@ block main
                 td #{item.createdAtFormat}
                 td(class="inner-center")
                   .inner-buttons
-                    button(
-                      class="inner-delete"
-                      button-delete 
-                      data-api = `/${pathAdmin}/contact/delete/${item.id}`
-                      
-                    ) <i class="fa-regular fa-trash-can"></i>
+                    if (permissions.includes("contact_delete"))
+                      button(
+                        class="inner-delete"
+                        button-delete 
+                        data-api = `/${pathAdmin}/contact/delete/${item.id}`
+                        
+                      ) <i class="fa-regular fa-trash-can"></i>
     //- End Section 6
 
     //- Section 7
