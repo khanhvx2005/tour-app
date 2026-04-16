@@ -1,0 +1,20 @@
+mixin alert_success(time)
+    - if (messages.success)
+        .alert.alert-success(show-alert data-time=time)
+            .alert-icon
+                i.fas.fa-check-circle
+            .alert-content
+                span.alert-title Thành công!
+                span.alert-desc #{messages.success}
+            span.alert-close(close-alert)
+                i.fas.fa-times
+mixin alert_error(time)
+    - if (messages.error)
+        .alert.alert-danger(show-alert data-time=time)
+            .alert-icon
+                i.fas.fa-exclamation-circle
+            .alert-content
+                span.alert-title Lỗi!
+                span.alert-desc #{messages.error}
+            span.alert-close(close-alert)
+                i.fas.fa-times

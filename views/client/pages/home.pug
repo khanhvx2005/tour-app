@@ -1,7 +1,9 @@
 extends ../layouts/default.pug
 include ../mixins/product-item.pug
+include ../mixins/alert.pug
 
 block main
+  +alert_success("5000")
   // Section 1
   .section-1
     .container

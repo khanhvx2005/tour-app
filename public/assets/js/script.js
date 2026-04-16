@@ -830,3 +830,34 @@ if (pageCart) {
     drawCart();
 }
 // End Page Cart
+// Alert
+// Show Alert
+const showAlert = document.querySelector("[show-alert]");
+if (showAlert) {
+    const time = parseInt(showAlert.getAttribute("data-time")) || 3000;
+    const closeAlert = showAlert.querySelector("[close-alert]");
+
+    // Hàm đóng thông báo
+    const close = () => {
+        showAlert.classList.add("alert-hidden");
+        // Đợi animation chạy xong (0.5s) mới xóa khỏi DOM
+        setTimeout(() => {
+            showAlert.remove();
+        }, 500);
+    };
+
+    // Tự động đóng sau thời gian quy định
+    setTimeout(() => {
+        close();
+    }, time);
+
+    // Đóng khi click nút X
+    if (closeAlert) {
+        closeAlert.addEventListener("click", () => {
+            close();
+        });
+    }
+}
+// end thông báo
+
+// End Alert
