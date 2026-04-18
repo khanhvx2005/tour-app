@@ -871,3 +871,21 @@ if (pagination) {
     })
 }
 // End pagination
+// Sắp xếp giá
+const btnSortPrice = document.querySelectorAll("[btnSortPrice]");
+if (btnSortPrice.length > 0) {
+    const url = new URL(window.location.href)
+    btnSortPrice.forEach((button) => {
+        button.addEventListener("click", () => {
+            const value = button.getAttribute("btnSortPrice");
+            if (value) {
+                url.searchParams.set('sortPrice', value)
+            } else {
+                url.searchParams.delete('sortPrice')
+            }
+            window.location.href = url.href;
+        })
+
+    })
+
+}

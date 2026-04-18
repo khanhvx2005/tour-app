@@ -54,7 +54,9 @@ module.exports.list = async (req, res) => {
         const find = {
             category: { $in: listCategoryId },
             deleted: false,
-            status: "active"
+            status: "active",
+        }
+        const sort = {
         }
         // Phân trang
         const limitItems = 6;
@@ -73,12 +75,18 @@ module.exports.list = async (req, res) => {
             currentPage: currentPage
         }
         // End phân trang
+        // Sắp xếp giá
+        if (req.query.sortPrice) {
+            const [key, value] = req.query.sortPrice.split("-");
+            sort[key] = value;
+        } else {
+            sort.position = "desc";
+        }
+        // End sắp xếp giá
         const totalTour = await Tour.countDocuments(find)
         const tourList = await Tour
             .find(find)
-            .sort({
-                position: 'desc'
-            })
+            .sort(sort)
             .limit(limitItems)
             .skip(skip)
         for (const item of tourList) {

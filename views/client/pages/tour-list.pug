@@ -93,13 +93,13 @@ block main
             .inner-sort
               .inner-label Sắp xếp:
               .inner-list
-                button
+                button(btnSortPrice = "priceNewAdult-asc" )
                   | Giá tăng dần
                   i.fa-solid.fa-square-caret-up
-                button
+                button(btnSortPrice = "priceNewAdult-desc")
                   | Giá giảm dần
                   i.fa-solid.fa-square-caret-down
-                button.active
+                button
                   | Khuyến Mại Hot
                   i.fa-solid.fa-tag
                 button
