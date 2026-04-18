@@ -885,7 +885,14 @@ if (btnSortPrice.length > 0) {
             }
             window.location.href = url.href;
         })
+        const currentValue = url.searchParams.get('sortPrice');
+        if (currentValue) {
+            if (currentValue == button.getAttribute("btnSortPrice")) {
+                button.classList.add("active")
+            }
+        }
 
     })
+
 
 }
