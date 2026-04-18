@@ -62,7 +62,7 @@ module.exports.list = async (req, res) => {
         const totalPage = Math.ceil(totalRecords / limitItems)
         let currentPage = 1;
         if (req.query.page && req.query.page > 0) {
-            currentPage = req.query.page
+            currentPage = parseInt(req.query.page)
         }
         if (currentPage > totalPage && totalPage > 0) {
             currentPage = totalPage;
