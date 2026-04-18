@@ -45,6 +45,8 @@ module.exports.list = async (req, res) => {
         })
         // End breadcrumb
 
+
+
         // Danh sách Tour
         const listCategory = await categoryHelper.getCategory(categoryDetail.id)
         const listCategoryId = listCategory.map((item) => item.id)
@@ -54,13 +56,31 @@ module.exports.list = async (req, res) => {
             deleted: false,
             status: "active"
         }
+        // Phân trang
+        const limitItems = 6;
+        const totalRecords = await Tour.countDocuments(find)
+        const totalPage = Math.ceil(totalRecords / limitItems)
+        let currentPage = 1;
+        if (req.query.page && req.query.page > 0) {
+            currentPage = req.query.page
+        }
+        if (currentPage > totalPage && totalPage > 0) {
+            currentPage = totalPage;
+        }
+        const skip = (currentPage - 1) * limitItems;
+        const pagination = {
+            totalPage: totalPage,
+            currentPage: currentPage
+        }
+        // End phân trang
         const totalTour = await Tour.countDocuments(find)
         const tourList = await Tour
             .find(find)
             .sort({
                 position: 'desc'
             })
-            .limit(6)
+            .limit(limitItems)
+            .skip(skip)
         for (const item of tourList) {
             item.discount = (((item.priceAdult - item.priceNewAdult) / item.priceAdult) * 100).toFixed();
             item.departureDateFormat = moment(item.departureDate).format('DD/MM/YYYY');
@@ -77,7 +97,8 @@ module.exports.list = async (req, res) => {
             tourList: tourList,
             breadcrumb: breadcrumb,
             cityList: cityList,
-            totalTour: totalTour
+            totalTour: totalTour,
+            pagination: pagination
         })
     } else {
         res.redirect(`/`)

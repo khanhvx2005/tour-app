@@ -852,3 +852,22 @@ if (showAlert) {
 // end thông báo
 
 // End Alert
+// Pagination
+const pagination = document.querySelector(".box-pagination");
+if (pagination) {
+    const button = pagination.querySelectorAll("button")
+    const url = new URL(window.location.href)
+    button.forEach((button) => {
+        button.addEventListener("click", () => {
+            const value = button.getAttribute("page")
+            if (value) {
+                url.searchParams.set('page', value)
+            } else {
+                url.searchParams.delete('page')
+            }
+            window.location.href = url.href;
+        })
+
+    })
+}
+// End pagination

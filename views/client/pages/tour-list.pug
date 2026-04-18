@@ -118,13 +118,13 @@ block main
               // End Product Item
           // Pagination
           .box-pagination
-            button
-              i.fa-solid.fa-angles-left
-            button.active 1
-            button 2
-            button 3
-            button 4
-            button
-              i.fa-solid.fa-angles-right
+            if(pagination.currentPage > 1)
+              button(page = pagination.currentPage - 1)
+                i.fa-solid.fa-angles-left
+            - for(let i=1;i<=pagination.totalPage;i++)
+              button(page = i class = (pagination.currentPage == i ) ? "active" : "") #{i}
+            if(pagination.currentPage < pagination.totalPage)
+              button(page = pagination.currentPage + 1)
+                i.fa-solid.fa-angles-right
           // End Pagination
   //- // End Section 9

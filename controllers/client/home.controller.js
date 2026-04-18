@@ -31,7 +31,7 @@ module.exports.home = async (req, res) => {
             deleted: false,
             status: "active"
         })
-        .limit(6)
+        .limit(8)
         .sort({
             position: 'desc'
         })
@@ -54,7 +54,7 @@ module.exports.home = async (req, res) => {
             deleted: false,
             status: "active"
         })
-        .limit(6)
+        .limit(8)
         .sort({
             position: 'desc'
         })
