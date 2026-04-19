@@ -3,25 +3,7 @@ include ../mixins/box-breadcrumb.pug
 
 block main
   // Breadcrumb
-  -
-    var breadcrumb = {
-      images: "/assets/images/banner-7.jpg",
-      title: "Tour Hà Nội - Ninh Bình - Hạ Long - Yên tử - Sapa | 6N5Đ",
-      list: [
-        {
-          link: "/tours",
-          title: "Tour nước ngoài"
-        },
-        {
-          link: "/",
-          title: "Trang chủ"
-        },
-        {
-          link: "/tours",
-          title: "Tour trong nước"
-        }
-      ]
-    }
+  
   .box-breadcrumb
     .inner-image
       img(
@@ -45,41 +27,48 @@ block main
             .inner-images-main
               .swiper.swiper-box-images-main
                 .swiper-wrapper
-                  .swiper-slide 
-                    .inner-image
-                      img(
-                        alt="" 
-                        src="/assets/images/banner-9.png"
-                        )
+                  each image in tourDetail.images
+                    .swiper-slide
+                      .inner-image
+                        img(
+                          alt="" 
+                          src=image
+                          )
             
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src="/assets/images/banner-10.png"
-                        )
+            .inner-images-thumb
+              .swiper.swiper-box-images-thumb
+                .swiper-wrapper
+                  each image in tourDetail.images
+                    .swiper-slide
+                      .inner-image
+                        img(
+                          alt="" 
+                          src=image
+                          )
           .box-tour-info
             .inner-title Thông Tin Tour
-            .inner-content ABC....
+            .inner-content !{tourDetail.information}
             .inner-read-more
               button.button-outline Xem tất cả
           .box-tour-schedule
             .inner-title-main Lịch Trình Tour
             .inner-list
               .inner-item
-                .inner-title ABC...
-                .inner-content ABC....
+                each item in tourDetail.schedules
+                  .inner-title #{item.title}
+                  .inner-content !{item.description}
         .inner-right
           .box-tour-detail
             .inner-title-main Chuyến Đi Của Bạn
             .inner-product
               .inner-image
                 img(
-                  alt="" 
-                  src="/assets/images/banner-10.png"
+                  alt=tourDetail.name
+                  src=tourDetail.avatar
                   )
+                  
               .inner-info
-                .inner-title ABC...
+                .inner-title #{tourDetail.name}
                 .inner-rating
                   .inner-stars
                     i.fa-solid.fa-star
@@ -89,27 +78,27 @@ block main
                     i.fa-solid.fa-star
                   .inner-number 500 lượt đánh giá
             .inner-meta
-              //- .inner-item
-              //-   i.fa-solid.fa-ticket-simple
-              //-   span Mã Tour:
-              //-   span.inner-highlight 28T00001
+              .inner-item
+                i.fa-solid.fa-ticket-simple
+                span Mã Tour:
+                span.inner-highlight 28T00001
               .inner-item
                 i.fa-solid.fa-calendar-days
                 span Thời Gian:
-                span.inner-highlight ABC...
+                span.inner-highlight #{tourDetail.time}
               .inner-item
                 i.fa-solid.fa-truck-plane
                 span Phương Tiện:
-                span.inner-highlight ABC...
+                span.inner-highlight #{tourDetail.vehicle}
               .inner-item
                 i.fa-solid.fa-calendar-days
                 span Ngày Khởi Hành:
-                span.inner-highlight ABC...
+                span.inner-highlight #{tourDetail.departureDateFormat}
             .inner-form
               label.inner-label Khởi Hành Tại:
-              select()
-                option(value="") ABC....
-                option(value="") ABC...
+              select
+                each item in cityList
+                  option(value=item.id) #{item.name}
 
             .inner-quantity
               label.inner-label Số Lượng Hành Khách

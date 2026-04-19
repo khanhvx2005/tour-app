@@ -8,12 +8,12 @@ const tourValidate = require('../../validates/admin/tour.validate')
 router.get('/list', tourController.list)
 router.get('/create', tourController.create)
 router.get('/trash', tourController.trash)
-router.post('/create', upload.single('avatar'), tourValidate.createPost, tourController.createPost)
+router.post('/create', upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'images', maxCount: 4 }]), tourValidate.createPost, tourController.createPost)
 router.patch('/change-multi', tourController.changeMultiPatch)
 router.get('/edit/:id', tourController.edit)
 router.patch(
     '/edit/:id',
-    upload.single('avatar'),
+    upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'images', maxCount: 4 }]),
     tourValidate.createPost,
     tourController.editPatch
 )

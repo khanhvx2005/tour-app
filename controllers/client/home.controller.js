@@ -65,7 +65,7 @@ module.exports.home = async (req, res) => {
     // End section 6
 
     res.render('client/pages/home.pug', {
-        titlePage: "Trang chủ",
+        pageTitle: "Trang chủ",
         tourListSection2: tourListSection2,
         tourListSection4: tourListSection4,
         tourListSection6: tourListSection6

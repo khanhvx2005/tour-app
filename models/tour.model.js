@@ -8,6 +8,7 @@ const tourSchema = new mongoose.Schema(
         position: Number,
         priceChildren: Number,
         avatar: String,
+        images: Array,
         priceAdult: Number,
         priceBaby: Number,
         status: String,

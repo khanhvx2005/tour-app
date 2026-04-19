@@ -208,6 +208,7 @@ module.exports.trash = async (req, res) => {
     })
 }
 module.exports.createPost = async (req, res) => {
+
     if (!req.permissions.includes("tour_create")) {
         res.json({
             code: "error",
@@ -233,7 +234,8 @@ module.exports.createPost = async (req, res) => {
     req.body.locations = req.body.locations ? JSON.parse(req.body.locations) : [];
     req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
     req.body.schedules = req.body.schedules ? JSON.parse(req.body.schedules) : [];
-    req.body.avatar = req.file ? req.file.path : "";
+    req.body.avatar = req.files && req.files.avatar ? req.files.avatar[0].path : "";
+    req.body.images = req.files && req.files.images && req.files.images.length > 0 ? req.files.images.map((item) => item.path) : "";
     req.body.createdBy = req.account.id;
     req.body.updatedBy = req.account.id;
     const newTour = new Tour(req.body);
@@ -354,8 +356,8 @@ module.exports.editPatch = async (req, res) => {
         } else {
             req.body.position = parseInt(req.body.position)
         }
-        if (req.file) {
-            req.body.avatar = req.file.path;
+        if (req.files && req.files.avatar) {
+            req.body.avatar = req.files.avatar[0].path;
         } else {
             delete req.body.avatar;
         }
@@ -373,6 +375,11 @@ module.exports.editPatch = async (req, res) => {
         req.body.departureDate = req.body.departureDate ? new Date(req.body.departureDate) : null;
         req.body.schedules = req.body.schedules ? JSON.parse(req.body.schedules) : [];
         req.body.updatedBy = req.account.id;
+        if (req.files && req.files.images && req.files.images.length > 0) {
+            req.body.images = req.files.images.map((file) => file.path);
+        } else {
+            delete req.body.images;
+        }
         await Tour.updateOne({
             _id: id
         }, req.body)

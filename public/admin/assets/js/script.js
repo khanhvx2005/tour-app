@@ -438,6 +438,13 @@ if (tourCreateForm) {
       formData.append("departureDate", departureDate)
       formData.append("information", information)
       formData.append("schedules", JSON.stringify(schedules))
+      // images
+      if (filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
+      // End images
       fetch(`/${pathAdmin}/tour/create`, {
         method: "POST",
         body: formData
@@ -454,13 +461,7 @@ if (tourCreateForm) {
 
 
 
-      //   // images
-      //   if (filePondMulti.images.getFiles().length > 0) {
-      //     filePondMulti.images.getFiles().forEach(item => {
-      //       formData.append("images", item.file);
-      //     })
-      //   }
-      //   // End images
+
 
 
     })
@@ -560,11 +561,11 @@ if (tourEditForm) {
       formData.append("schedules", JSON.stringify(schedules));
 
       // images
-      // if(filePondMulti.images.getFiles().length > 0) {
-      //   filePondMulti.images.getFiles().forEach(item => {
-      //     formData.append("images", item.file);
-      //   })
-      // }
+      if (filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
       // End images
 
       fetch(`/${pathAdmin}/tour/edit/${id}`, {
