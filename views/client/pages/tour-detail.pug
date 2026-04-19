@@ -109,39 +109,41 @@ block main
                     input(
                       value="1" 
                       min="0" 
+                      max = tourDetail.stockAdult
                       type="number"
                       )
                   .inner-item-price
                     span(stock-adult) 1
                     span x
-                    span.inner-highlight 100
+                    span.inner-highlight #{tourDetail.priceNewAdult}
                 .inner-item
                   .inner-item-label Trẻ em:
                   .inner-item-input
                     input(
                       value="0" 
                       min="0" 
+                      max = tourDetail.stockChildren
                       type="number"
                   
                       )
                   .inner-item-price
                     span(stock-children) 0
                     span x
-                    span.inner-highlight 200
+                    span.inner-highlight #{tourDetail.priceNewChildren}
                 .inner-item
                   .inner-item-label Em bé:
                   .inner-item-input
                     input(
                       value="0" 
                       min="0" 
-                      
+                      max = tourDetail.stockBaby
                       type="number"
           
                       )
                   .inner-item-price
                     span(stock-baby) 0
                     span x
-                    span.inner-highlight 100
+                    span.inner-highlight #{tourDetail.priceNewBaby}
             .inner-total
               .inner-total-label Tổng cộng:
               .inner-total-price

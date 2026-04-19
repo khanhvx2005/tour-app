@@ -9,6 +9,7 @@ const contactRoutes = require('./contact.route')
 const settingRoutes = require('./setting.route')
 const profileRoutes = require('./profile.route')
 const authMiddleware = require("../../middlewares/admin/auth.middleware")
+const uploadRoutes = require('./upload.route')
 module.exports = (app) => {
     app.use((req, res, next) => {
         res.setHeader('Cache-control', 'no-store')
@@ -23,6 +24,8 @@ module.exports = (app) => {
     app.use(`/${pathAdmin}/contact`, authMiddleware.verifyToken, contactRoutes)
     app.use(`/${pathAdmin}/setting`, authMiddleware.verifyToken, settingRoutes)
     app.use(`/${pathAdmin}/profile`, authMiddleware.verifyToken, profileRoutes)
+    app.use(`/${pathAdmin}/upload`, authMiddleware.verifyToken, uploadRoutes)
+
     app.use(authMiddleware.verifyToken, (req, res) => {
         res.render('admin/pages/error-404', { titlePage: "404 not found" })
     });
