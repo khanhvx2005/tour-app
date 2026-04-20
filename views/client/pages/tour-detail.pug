@@ -96,7 +96,7 @@ block main
                 span.inner-highlight #{tourDetail.departureDateFormat}
             .inner-form
               label.inner-label Khởi Hành Tại:
-              select
+              select(location-from)
                 each item in cityList
                   option(value=item.id) #{item.name}
 
@@ -111,6 +111,8 @@ block main
                       min="0" 
                       max = tourDetail.stockAdult
                       type="number"
+                      input-stock-adult
+                      price = tourDetail.priceNewAdult
                       )
                   .inner-item-price
                     span(stock-adult) 1
@@ -124,7 +126,8 @@ block main
                       min="0" 
                       max = tourDetail.stockChildren
                       type="number"
-                  
+                      input-stock-children
+                      price = tourDetail.priceNewChildren
                       )
                   .inner-item-price
                     span(stock-children) 0
@@ -138,7 +141,8 @@ block main
                       min="0" 
                       max = tourDetail.stockBaby
                       type="number"
-          
+                      input-stock-baby
+                      price = tourDetail.priceNewBaby
                       )
                   .inner-item-price
                     span(stock-baby) 0
@@ -147,7 +151,7 @@ block main
             .inner-total
               .inner-total-label Tổng cộng:
               .inner-total-price
-                span(total-price) 1000
+                span(total-price) #{tourDetail.priceNewAdult.toLocaleString("vi-VN")}
                 span đ
-            button.inner-button-add-cart() Thêm Vào Giỏ Hàng
+            button.inner-button-add-cart(tour-id =tourDetail.id) Thêm Vào Giỏ Hàng
   // End Section 10
