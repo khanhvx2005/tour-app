@@ -6,14 +6,17 @@ const categoryMiddleware = require('../../middlewares/client/category.middleware
 const contactRoute = require('./contact.route')
 const categoryRoute = require('./category.route')
 const searchRoute = require('./search.route')
+const orderRoute = require('./order.route')
+
 module.exports = (app) => {
-    app.use(settingMiddleware.websiteInfo)
-    app.use(categoryMiddleware.category)
-    app.use('/tour', routeTour)
-    app.use('/', homeRoute)
-    app.use('/cart', cartRoute)
-    app.use('/contact', contactRoute)
-    app.use('/category', categoryRoute)
-    app.use('/search', searchRoute)
+  app.use(settingMiddleware.websiteInfo)
+  app.use(categoryMiddleware.category)
+  app.use('/tour', routeTour)
+  app.use('/', homeRoute)
+  app.use('/cart', cartRoute)
+  app.use('/contact', contactRoute)
+  app.use('/category', categoryRoute)
+  app.use('/search', searchRoute)
+  app.use('/order', orderRoute)
 
 }
