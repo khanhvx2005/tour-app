@@ -400,6 +400,9 @@ if (orderForm) {
           .then(res => res.json())
           .then(data => {
             if (data.code == "success") {
+              let cart = JSON.parse(localStorage.getItem("cart"));
+              cart = cart.filter((item) => item.checked == false)
+              localStorage.setItem("cart", JSON.stringify(cart))
               window.location.href = `/order/success?orderId=${data.orderId}&phone=${phone}`;
             }
             if (data.code == "error") {

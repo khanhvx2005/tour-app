@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const schema = new mongoose.Schema(
   {
+    orderCode: String,
     fullName: String,
     phone: String,
     note: String,
