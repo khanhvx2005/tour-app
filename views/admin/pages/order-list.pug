@@ -81,7 +81,7 @@ block main
                   //- div Mã giảm: TOURMUAHE2024
                   div Thanh toán: #{orderDetail.total.toLocaleString("vi-VN")}đ
                   div PTTT: #{orderDetail.paymentMethodName}
-                  div TTTT: Đã thanh toán
+                  div TTTT: #{orderDetail.paymentStatusName}
                 td
                   if (orderDetail.status == "initial")
                     .badge.badge-orange #{orderDetail.statusName}
@@ -98,7 +98,7 @@ block main
                     if (permissions.includes("order_edit"))
 
                       a(
-                        href="/admin/order/edit"
+                        href=`/${pathAdmin}/order/edit/${orderDetail.id}`
                         class="inner-edit"
                       ) <i class="fa-regular fa-pen-to-square"></i>
                     if (permissions.includes("order_delete"))
