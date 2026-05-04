@@ -10,6 +10,10 @@ module.exports.paymentMethod = [
   }, {
     label: "Thanh toán chuyển khoản",
     value: 'bank'
+  },
+  {
+    label: "Thanh toán qua ví Zalopay",
+    value: 'zalopay'
   }
 ]
 module.exports.paymentStatus = [

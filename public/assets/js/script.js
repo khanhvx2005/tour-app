@@ -403,7 +403,19 @@ if (orderForm) {
               let cart = JSON.parse(localStorage.getItem("cart"));
               cart = cart.filter((item) => item.checked == false)
               localStorage.setItem("cart", JSON.stringify(cart))
-              window.location.href = `/order/success?orderId=${data.orderId}&phone=${phone}`;
+              switch (method) {
+                case "money":
+                case "bank":
+                  window.location.href = `/order/success?orderId=${data.orderId}&phone=${phone}`;
+
+                  break;
+                case "zalopay":
+                  window.location.href = `/order/payment-zalopay?orderId=${data.orderId}`; // Đường dẫn để thanh toán
+
+                  break;
+                default:
+                  break;
+              }
             }
             if (data.code == "error") {
               alert(data.message)
@@ -413,71 +425,6 @@ if (orderForm) {
       } else {
         alert("Vui lòng chọn ít nhất 1 tour!")
       }
-
-
-      //   let cart = JSON.parse(localStorage.getItem("cart"));
-      //   cart = cart.filter(item => {
-      //     return (item.checked == true) && (item.quantityAdult + item.quantityChildren + item.quantityBaby > 0)
-      //   });
-
-      //   cart = cart.map(item => {
-      //     return {
-      //       tourId: item.tourId,
-      //       locationFrom: item.locationFrom,
-      //       quantityAdult: item.quantityAdult,
-      //       quantityChildren: item.quantityChildren,
-      //       quantityBaby: item.quantityBaby,
-      //     }
-      //   })
-
-      //   if (cart.length > 0) {
-      //     const dataFinal = {
-      //       fullName: fullName,
-      //       phone: phone,
-      //       note: note,
-      //       paymentMethod: method,
-      //       items: cart
-      //     };
-
-      //     fetch(`/order/create`, {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(dataFinal),
-      //     })
-      //       .then(res => res.json())
-      //       .then(data => {
-      //         if (data.code == "error") {
-      //           alert(data.message);
-      //         }
-
-      //         if (data.code == "success") {
-      //           // Cập nhật lại giỏ hàng
-      //           let cart = JSON.parse(localStorage.getItem("cart"));
-      //           cart = cart.filter(item => item.checked == false);
-      //           localStorage.setItem("cart", JSON.stringify(cart));
-
-      //           switch (method) {
-      //             case "money":
-      //             case "bank":
-      //               // Chuyển hướng sang trang đặt hành thành công
-      //               window.location.href = `/order/success?orderId=${data.orderId}&phone=${phone}`;
-      //               break;
-      //             case "zalopay":
-      //               // Chuyển hướng sang trang thanh toán bằng ZaloPay
-      //               window.location.href = `/order/payment-zalopay?orderId=${data.orderId}`;
-      //               break;
-      //             case "vnpay":
-      //               // Chuyển hướng sang trang thanh toán bằng VNPay
-      //               window.location.href = `/order/payment-vnpay?orderId=${data.orderId}`;
-      //               break;
-      //           }
-      //         }
-      //       })
-      //   } else {
-      //     alert("Vui lòng đặt ít nhất 1 tour!");
-      //   }
     });
 
   // List Input Method
