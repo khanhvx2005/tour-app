@@ -15,6 +15,11 @@ module.exports.paymentMethod = [
     label: "Thanh toán qua ví Zalopay",
     value: 'zalopay'
   }
+  ,
+  {
+    label: "Thanh toán qua ví VNPay",
+    value: 'vnpay'
+  }
 ]
 module.exports.paymentStatus = [
   {

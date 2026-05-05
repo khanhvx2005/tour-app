@@ -411,7 +411,8 @@ if (orderForm) {
                   break;
                 case "zalopay":
                   window.location.href = `/order/payment-zalopay?orderId=${data.orderId}`; // Đường dẫn để thanh toán
-
+                case "vnpay":
+                  window.location.href = `/order/payment-vnpay?orderId=${data.orderId}`; // Đường dẫn để thanh toán
                   break;
                 default:
                   break;
