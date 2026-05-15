@@ -1,0 +1,44 @@
+extends ../layouts/default.pug
+include ../mixins/alert.pug
+
+block main
+  +alert_success("5000")
+
+  h1.box-title Chỉnh sửa mã giảm giá
+  .section-8
+    form#coupon-edit-form
+      .inner-group(style="display: none;")
+        label(class="inner-label" for="id") Id
+        input(type="text" id="id" name="id" value=couponDetail.id)
+      .inner-group
+        label(class="inner-label" for="name") Tên sự kiện *
+        input(type="text" id="name" name="name" value = couponDetail.name)
+      .inner-group
+        label(class="inner-label" for="code") Mã giảm giá *
+        input(type="text" id="code" name="code" value = couponDetail.code)
+
+
+          //- +options(categoryList, 0)
+      .inner-group
+        label(class="inner-label" for="discountValue") % Giảm giá *
+        input(type="number" id="discountValue" name="discountValue" min = "0" value = couponDetail.discountValue)
+      .inner-group
+        label(class="inner-label" for="maxDiscountAmount") Giảm tối đa
+        input(type="number" id="maxDiscountAmount" name="maxDiscountAmount" min = "0" value = couponDetail.maxDiscountAmount)
+      .inner-group
+        label(class="inner-label" for="quantity") Số lượng *
+        input(type="number" id="quantity" name="quantity" min = "0" value = couponDetail.quantity)
+      .inner-group
+        label(class="inner-label" for="endDate") Ngày hết hạn *
+        input(type="date" id="endDate" name="endDate" value = couponDetail.endDateFormat)
+      .inner-group
+          label(class="inner-label" for="status") Trạng thái
+          select(id="status" name="status")
+            option(value="active" selected = (couponDetail.status == "active" ? true : false)) Hoạt động
+            option(value="inactive" selected = (couponDetail.status == "inactive" ? true : false)) Tạm dừng
+
+      
+      .inner-button.inner-two-col
+        button Cập nhập
+    .inner-back
+      a(href=`/${pathAdmin}/coupon/list`) Quay lại danh sách

@@ -18,6 +18,7 @@ block main
               name="coupon" 
               placeholder="Nhập mã giảm giá" 
               type="text"
+              value = ""
               )
             button(type="submit") Dùng Mã
         .inner-list-price
@@ -28,7 +29,7 @@ block main
               span đ
           .inner-item
             .inner-label Giảm:
-            .inner-price -0đ
+            .inner-price(cart-discount) -0đ
           .inner-item
             .inner-label Thanh toán:
             .inner-price-highlight

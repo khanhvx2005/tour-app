@@ -26,6 +26,8 @@ block main
           select(id="paymentMethod" name="paymentMethod")
             each item in paymentMethod
               option(
+                selected = (orderDetail.paymentMethod == item.value) ? true : false
+
                 value=item.value
               ) #{item.label}
               
@@ -34,6 +36,7 @@ block main
           select(id="paymentStatus" name="paymentStatus")
             each item in paymentStatus
               option(
+                selected = (orderDetail.paymentStatus == item.value) ? true : false
                 value=item.value
               ) #{item.label}
             

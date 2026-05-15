@@ -6,10 +6,16 @@ const variableHelper = require('../../config/variable')
 const moment = require('moment')
 const axios = require('axios').default;
 const CryptoJS = require('crypto-js');
-const sortHelper = require('../../helpers/sort.helper')
+const sortHelper = require('../../helpers/sort.helper');
+const Coupon = require("../../models/coupon.model");
 module.exports.createPost = async (req, res) => {
 
   try {
+
+    const { code } = req.body.coupon;
+
+
+
     req.body.orderCode = "OD" + generateHelper.generateRandomNumber(10)
     for (const item of req.body.items) {
       const infoTour = await Tour.findOne({
@@ -39,7 +45,14 @@ module.exports.createPost = async (req, res) => {
     req.body.subTotal = req.body.items.reduce((sum, item) => {
       return sum + (item.priceNewAdult * item.quantityAdult) + (item.priceNewChildren * item.quantityChildren) + (item.priceNewBaby * item.quantityBaby)
     }, 0)
+    const exitsCoupon = await Coupon.findOne({
+      code: code
+    })
+    req.body.couponCode = code;
     req.body.discount = 0;
+    if (exitsCoupon) {
+      req.body.discount = (req.body.subTotal * exitsCoupon.discountValue) / 100;
+    }
     req.body.total = req.body.subTotal - req.body.discount;
     const newRecord = new Order(req.body)
     await newRecord.save()
@@ -306,7 +319,7 @@ module.exports.paymentVnpayResult = async (req, res) => {
         deleted: false
       },
         {
-          paymentStatus: "paid"
+          paymentStatus: "paid",
         })
       res.redirect(`${process.env.DOMAIN_WEBSITE}/order/success?orderId=${orderId}&phone=${orderDetail.phone}`)
     } else {

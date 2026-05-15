@@ -25,6 +25,7 @@ module.exports.list = async (req, res) => {
     orderList: orderList
   })
 }
+
 module.exports.edit = async (req, res) => {
   try {
     const id = req.params.id;
@@ -61,6 +62,7 @@ module.exports.edit = async (req, res) => {
   }
 
 }
+
 module.exports.editPatch = async (req, res) => {
   try {
     const id = req.params.id;

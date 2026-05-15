@@ -1,0 +1,70 @@
+extends ../layouts/default.pug
+include ../mixins/alert.pug
+
+block main
+  +alert_success("5000")
+
+  h1.box-title Quản lý mã giảm giá
+  .section-5
+    .inner-wrap
+
+      include ../partials/change-multi.pug
+      .inner-search
+        <i class="fa-solid fa-magnifying-glass"></i>
+        input(type="text" placeholder="Tìm kiếm"  search-input)
+      .inner-button-create
+        a(href=`/${pathAdmin}/coupon/create`) + Tạo mới
+  .section-6
+    .table-2
+      table
+        thead
+          tr
+            th Mã Coupon
+            th Tên sự kiện
+            th(class="inner-center") % Giảm giá
+            th(class="inner-center") Giảm tối đa
+            th Số lượng còn lại
+            th Ngày hết hạn
+            th(class="inner-center") Trạng thái
+            th Tạo bởi
+            th Cập nhật bởi
+            th Hành động
+        tbody
+          each item in couponList
+            tr
+              
+              td #{item.code}
+              td #{item.name}
+              td(class="inner-center") #{item.discountValue}%
+              td(class="inner-center") #{item.maxDiscountAmount.toLocaleString("vi-VN")} <sup>đ</sup>
+              td #{item.quantity}
+              td #{item.endDateFormat}
+              td(class="inner-center")
+                if (item.status == "active")
+                  .badge.badge-green Hoạt động
+                else 
+                  .badge.badge-red Tạm dừng
+
+                
+              td
+                div #{item.createdByName}
+                div.inner-time #{item.createdAtFormat}
+                
+              td
+                div #{item.updatedByName}
+                div.inner-time #{item.updatedAtFormat}
+                
+              td
+                .inner-buttons
+
+                  a(
+                    href=`/${pathAdmin}/coupon/edit/${item.id}`
+                    class="inner-edit"
+                  ) <i class="fa-regular fa-pen-to-square"></i>
+
+                  button(
+                    class="inner-delete"
+                    
+                  ) <i class="fa-regular fa-trash-can"></i>
+              
+            

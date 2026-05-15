@@ -1609,6 +1609,58 @@ if (filterPrice) {
     filterPrice.value = currentValue;
   }
 }
+// Coupon Create Form
+const couponCreateForm = document.querySelector("#coupon-create-form");
+if (couponCreateForm) {
+  const validation = new JustValidate('#coupon-create-form');
+
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên sự kiện!'
+      }
+    ])
+    .onSuccess((event) => {
+      const name = event.target.name.value;
+      const code = event.target.code.value;
+      const discountValue = event.target.discountValue.value;
+      const maxDiscountAmount = event.target.maxDiscountAmount.value;
+      const quantity = event.target.quantity.value;
+      const endDate = event.target.endDate.value;
+      const status = event.target.status.value;
+
+      const dataFinal = {
+        name: name,
+        code: code,
+        discountValue: discountValue,
+        maxDiscountAmount: maxDiscountAmount,
+        quantity: quantity,
+        endDate: endDate,
+        status: status
+      }
+      fetch(`/${pathAdmin}/coupon/create`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/coupon/list`
+          }
+          if (data.code == "error") {
+            alert(data.message)
+          }
+        })
+
+
+    })
+    ;
+}
+// End Coupon Create Form
 
 
 

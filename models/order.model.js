@@ -11,6 +11,7 @@ const schema = new mongoose.Schema(
     status: String,
     subTotal: Number,
     discount: Number,
+    couponCode: String,
     total: Number,
     deleted: {
       type: Boolean,

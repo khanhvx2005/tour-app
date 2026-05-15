@@ -317,18 +317,8 @@ if (emailForm) {
 }
 // End Email Form
 
-// Coupon Form
-const couponForm = document.querySelector("#coupon-form");
-if (couponForm) {
-  const validation = new JustValidate('#coupon-form');
 
-  validation
-    .onSuccess((event) => {
-      const coupon = event.target.coupon.value;
-      console.log(coupon);
-    });
-}
-// End Email Form
+
 
 // Order Form
 const orderForm = document.querySelector("#order-form");
@@ -382,13 +372,16 @@ if (orderForm) {
           locationFrom: item.locationFrom
         }
       })
+      const coupon = JSON.parse(sessionStorage.getItem("coupon"))
+
       if (cart.length > 0) {
         const dataFinal = {
           fullName: fullName,
           phone: phone,
           note: note,
           items: cart,
-          paymentMethod: method
+          paymentMethod: method,
+          coupon: coupon
         }
         fetch(`/order/create`, {
           method: "POST",
@@ -400,6 +393,7 @@ if (orderForm) {
           .then(res => res.json())
           .then(data => {
             if (data.code == "success") {
+              sessionStorage.removeItem("coupon");
               let cart = JSON.parse(localStorage.getItem("cart"));
               cart = cart.filter((item) => item.checked == false)
               localStorage.setItem("cart", JSON.stringify(cart))
@@ -745,12 +739,22 @@ const drawCart = () => {
             return sum;
           }
         }, 0);
-        const discount = 0;
+        const coupon = JSON.parse(sessionStorage.getItem("coupon"))
+        let discount = 0;
+        if (coupon && coupon.discountValue) {
+          discount = (subTotalPrice * coupon.discountValue) / 100;
+
+        }
+        if (coupon && coupon.maxDiscountAmount && discount > coupon.maxDiscountAmount) {
+          discount = coupon.maxDiscountAmount;
+        }
+
         const totalPrice = subTotalPrice - discount;
 
         const cartSubTotal = document.querySelector("[cart-sub-total]");
         cartSubTotal.innerHTML = subTotalPrice.toLocaleString("vi-VN");
-
+        const cartDiscount = document.querySelector("[cart-discount]");
+        cartDiscount.innerHTML = discount.toLocaleString("vi-VN");
         const cartTotal = document.querySelector("[cart-total]");
         cartTotal.innerHTML = totalPrice.toLocaleString("vi-VN");
         // Hết Tính tổng tiền
@@ -888,3 +892,34 @@ if (btnSortPrice.length > 0) {
 
 }
 // End Sắp xếp giá
+// Coupon Form
+const couponForm = document.querySelector("#coupon-form");
+if (couponForm) {
+  const validation = new JustValidate('#coupon-form');
+
+  validation
+    .onSuccess((event) => {
+      const coupon = event.target.coupon.value;
+      const dataFinal = {
+        coupon: coupon
+      }
+      fetch('/coupon/detail', {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code == "success") {
+            sessionStorage.setItem("coupon", JSON.stringify(data.couponDetail))
+
+            drawCart()
+          }
+          if (data.code == "error") {
+            alert(data.message)
+          }
+        })
+    });
+}
