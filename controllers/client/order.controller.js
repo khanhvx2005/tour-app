@@ -54,6 +54,12 @@ module.exports.createPost = async (req, res) => {
       req.body.discount = (req.body.subTotal * exitsCoupon.discountValue) / 100;
     }
     req.body.total = req.body.subTotal - req.body.discount;
+    await Coupon.updateOne({
+      code: code
+    }, {
+
+      quantity: exitsCoupon.quantity - 1
+    })
     const newRecord = new Order(req.body)
     await newRecord.save()
     res.json({
