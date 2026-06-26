@@ -26,6 +26,7 @@ module.exports.detail = async (req, res) => {
       const city = await City.findOne({
         _id: item.locationFrom
       })
+      item.stockAdult = tour.stockAdult;
       item.locationFromName = city.name;
       finalCart.push(item)
     }

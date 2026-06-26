@@ -12,7 +12,7 @@ const accountAdminSchema = new mongoose.Schema(
     avatar: String,
     phone: String,
     role: String,
-    positionCompany: String,
+
     createdBy: String,
     updatedBy: String,
     deletedBy: String,

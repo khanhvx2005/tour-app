@@ -665,8 +665,9 @@ const drawCart = () => {
                   <div class="inner-item-input">
                     <input 
                       value="${item.quantityAdult}" 
-                      min="0" 
                       type="number"
+                      min = "1"
+                      max="${item.stockAdult}"
                       input-quantity="quantityAdult"
                       tour-id="${item.tourId}"
                     >
@@ -683,8 +684,9 @@ const drawCart = () => {
                   <div class="inner-item-label">Trẻ em:</div>
                   <div class="inner-item-input">
                     <input 
+                      min = "0"
+
                       value="${item.quantityChildren}" 
-                      min="0" 
                       type="number"
                       input-quantity="quantityChildren"
                       tour-id="${item.tourId}"
@@ -702,8 +704,9 @@ const drawCart = () => {
                   <div class="inner-item-label">Em bé:</div>
                   <div class="inner-item-input">
                     <input 
+                      min = "0"
+
                       value="${item.quantityBaby}" 
-                      min="0" 
                       type="number"
                       input-quantity="quantityBaby"
                       tour-id="${item.tourId}"

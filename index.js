@@ -32,7 +32,7 @@ clientRoute(app);
 adminRoute(app);
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`)
 })
 
 // mongodb+srv://khanhvuxuan292005_db_user:KjbF47m1zZKqwlP9@cluster0.yh2j7gk.mongodb.net/tour-management

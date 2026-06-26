@@ -11,12 +11,8 @@ const Coupon = require("../../models/coupon.model");
 module.exports.createPost = async (req, res) => {
 
   try {
-
-    const { code } = req.body.coupon;
-
-
-
-    req.body.orderCode = "OD" + generateHelper.generateRandomNumber(10)
+    const code = req.body.coupon?.code || null;
+    req.body.orderCode = "OD" + generateHelper.generateRandomNumber(10);
     for (const item of req.body.items) {
       const infoTour = await Tour.findOne({
         _id: item.tourId,
@@ -45,21 +41,24 @@ module.exports.createPost = async (req, res) => {
     req.body.subTotal = req.body.items.reduce((sum, item) => {
       return sum + (item.priceNewAdult * item.quantityAdult) + (item.priceNewChildren * item.quantityChildren) + (item.priceNewBaby * item.quantityBaby)
     }, 0)
-    const exitsCoupon = await Coupon.findOne({
-      code: code
-    })
+
     req.body.couponCode = code;
     req.body.discount = 0;
-    if (exitsCoupon) {
-      req.body.discount = (req.body.subTotal * exitsCoupon.discountValue) / 100;
+    if (code) {
+      const exitsCoupon = await Coupon.findOne({ code: code });
+
+      if (exitsCoupon) {
+        req.body.discount = (req.body.subTotal * exitsCoupon.discountValue) / 100;
+
+        // SỬA 3: Đưa việc cập nhật số lượng coupon vào trong block này để tránh lỗi giảm số lượng của null
+        await Coupon.updateOne({
+          code: code
+        }, {
+          quantity: exitsCoupon.quantity - 1
+        });
+      }
     }
     req.body.total = req.body.subTotal - req.body.discount;
-    await Coupon.updateOne({
-      code: code
-    }, {
-
-      quantity: exitsCoupon.quantity - 1
-    })
     const newRecord = new Order(req.body)
     await newRecord.save()
     res.json({
